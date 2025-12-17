@@ -122,7 +122,7 @@ jobs:
           node-version: 20
 
       - name: Clear node_modules
-        run: rmdir /s /q node_modules || echo "No node_modules"
+        run: Remove-Item node_modules -Recurse -Force -ErrorAction SilentlyContinue
 
       - name: Clear Electron cache
         run: rmdir /s /q %USERPROFILE%\.cache\electron || echo "No cache"
@@ -154,7 +154,7 @@ jobs:
           node-version: 20
 
       - name: Clear node_modules
-        run: rmdir /s /q node_modules || echo "No node_modules"
+        run: Remove-Item node_modules -Recurse -Force -ErrorAction SilentlyContinue
 
       - name: Clear Electron cache
         run: rmdir /s /q %USERPROFILE%\.cache\electron || echo "No cache"
