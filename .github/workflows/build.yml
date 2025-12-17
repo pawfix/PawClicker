@@ -125,7 +125,7 @@ jobs:
         run: Remove-Item node_modules -Recurse -Force -ErrorAction SilentlyContinue
 
       - name: Clear Electron cache
-        run: Remove-Item %USERPROFILE%\. cache\electron -Recurse -Force -ErrorAction SilentlyContinue
+        run: Remove-Item "$env:USERPROFILE\.cache\electron" -Recurse -Force -ErrorAction SilentlyContinue
 
       - name: Install Dependencies
         run: npm ci
@@ -157,7 +157,7 @@ jobs:
         run: Remove-Item node_modules -Recurse -Force -ErrorAction SilentlyContinue
 
       - name: Clear Electron cache
-        run: Remove-Item %USERPROFILE%\. cache\electron -Recurse -Force -ErrorAction SilentlyContinue
+        run: Remove-Item "$env:USERPROFILE\.cache\electron" -Recurse -Force -ErrorAction SilentlyContinue
 
       - name: Install Dependencies
         run: npm ci
