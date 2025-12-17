@@ -215,4 +215,4 @@ jobs:
           body: ${{ env.COMMIT_MESSAGES }}
           makeLatest: true
           artifacts: dist/**/*
-          token: ${{ secrets.GH_TOKEN }}
+          token: ${{ secrets.GITHUB_TOKEN }}
