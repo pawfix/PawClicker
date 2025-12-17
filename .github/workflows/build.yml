@@ -37,16 +37,14 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
 
+# ===================== LINUX BUILD =====================
   build-linux-appimage:
     name: Build Linux AppImage
     runs-on: ubuntu-latest
     needs: setup
     env:
       GH_TOKEN: ${{ secrets.GH_TOKEN }}
-      ELECTRON_MIRROR: "https://npmmirror.com/mirrors/electron/"
-      ELECTRON_CUSTOM_DIR: "v39.2.4"
-      ELECTRON_CACHE: "~/.cache/electron"
-      ELECTRON_BUILDER_CACHE: "~/.cache/electron-builder"
+      ELECTRON_MIRROR: "https://github.com/electron/electron/releases/download/"
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
@@ -61,6 +59,11 @@ jobs:
         with:
           path: node_modules
           key: node-modules-${{ hashFiles('package-lock.json') }}
+
+      - name: Install Dependencies
+        run: npm ci
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
 
       - name: Build Linux AppImage
         run: npx electron-builder --linux AppImage
@@ -77,10 +80,7 @@ jobs:
     needs: setup
     env:
       GH_TOKEN: ${{ secrets.GH_TOKEN }}
-      ELECTRON_MIRROR: "https://npmmirror.com/mirrors/electron/"
-      ELECTRON_CUSTOM_DIR: "v39.2.4"
-      ELECTRON_CACHE: "~/.cache/electron"
-      ELECTRON_BUILDER_CACHE: "~/.cache/electron-builder"
+      ELECTRON_MIRROR: "https://github.com/electron/electron/releases/download/"
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
@@ -97,39 +97,45 @@ jobs:
           key: node-modules-${{ hashFiles('package-lock.json') }}
 
       - name: Install Dependencies
-        run: npm ci        
+        run: npm ci
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
 
       - name: Build Linux tar.gz
         run: npx electron-builder --linux tar.gz
-        
+
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
           name: linux-tar
           path: dist/*.tar.gz
 
-  build-win:
+# ===================== WINDOWS BUILD =====================
+  build-win-portable:
     name: Build Windows Portable
     runs-on: windows-latest
     needs: setup
     env:
       GH_TOKEN: ${{ secrets.GH_TOKEN }}
-      ELECTRON_MIRROR: "https://npmmirror.com/mirrors/electron/"
-      ELECTRON_CUSTOM_DIR: "v39.2.4"
+      ELECTRON_MIRROR: "https://github.com/electron/electron/releases/download/"
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
         with:
           node-version: 20
 
+      - name: Clear node_modules
+        run: rmdir /s /q node_modules || echo "No node_modules"
+
+      - name: Clear Electron cache
+        run: rmdir /s /q %USERPROFILE%\.cache\electron || echo "No cache"
+
       - name: Install Dependencies
         run: npm ci
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
 
-      - name: Build Windows
+      - name: Build Windows Portable
         run: npx electron-builder --win portable
 
       - name: Upload Artifact
@@ -144,20 +150,25 @@ jobs:
     needs: setup
     env:
       GH_TOKEN: ${{ secrets.GH_TOKEN }}
-      ELECTRON_MIRROR: "https://npmmirror.com/mirrors/electron/"
-      ELECTRON_CUSTOM_DIR: "v39.2.4"
+      ELECTRON_MIRROR: "https://github.com/electron/electron/releases/download/"
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
         with:
           node-version: 20
 
+      - name: Clear node_modules
+        run: rmdir /s /q node_modules || echo "No node_modules"
+
+      - name: Clear Electron cache
+        run: rmdir /s /q %USERPROFILE%\.cache\electron || echo "No cache"
+
       - name: Install Dependencies
         run: npm ci
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
 
-      - name: Build Windows
+      - name: Build Windows ZIP
         run: npx electron-builder --win zip
 
       - name: Upload Artifact
@@ -166,11 +177,12 @@ jobs:
           name: windows-zip
           path: dist/*.zip
 
+# ===================== RELEASE =====================
   release:
     name: Create GitHub Release
     runs-on: ubuntu-latest
     needs:
-      - build-win
+      - build-win-portable
       - build-linux-appimage
       - build-linux-tar
       - build-win-zip
