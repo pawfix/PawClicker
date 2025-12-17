@@ -84,18 +84,22 @@ let statsFile
 const assetPath = path.join(__dirname, '../assets/stats.json')
 const resourcePath = path.join(__dirname, '../extraResources/stats.json')
 
-if (fs.existsSync(assetPath)) {
-    statsFile = assetPath
-} else {
-    statsFile = resourcePath
-}
-
+statsFile = fs.existsSync(assetPath) ? assetPath : resourcePath
 
 ipcMain.on('RequestUserStats', (event) => {
     const statParse = JSON.parse(fs.readFileSync(statsFile, 'utf8'))
-
-    const jsonValue = statParse.stats.value
-    console.log('got request', jsonValue)
-    event.sender.send('getUserStats', jsonValue)
+    console.log('got request', statParse)
+    event.sender.send('getUserStats', statParse)
 })
+
+// Recive anc process save request
+ipcMain.on('updateUserStats', (event, newStats) => {
+    try {
+        fs.writeFileSync(statsFile, JSON.stringify(newStats, null, 2), 'utf8');
+        console.log('Stats successfully saved:', newStats);
+    } catch (err) {
+        console.error('Error saving stats file:', err);
+    }
+});
+
 
