@@ -1,15 +1,14 @@
-const { app, BrowserWindow, ipcMain } = require('electron')
-const fs = require('fs')
-const path = require('path')
-
+const { app, BrowserWindow, ipcMain } = require('electron');
+const fs = require('fs');
+const path = require('path');
 
 let mainWindow;
 let settingsWindow;
 
-//Main widow
+// --- Main window ---
 function createWindow() {
-    const win = new BrowserWindow({
-        w1idth: 800,
+    mainWindow = new BrowserWindow({
+        width: 800,
         height: 600,
         frame: false,
         webPreferences: {
@@ -17,14 +16,12 @@ function createWindow() {
             nodeIntegration: true,
             contextIsolation: false
         }
-    })
+    });
 
-    win.loadFile(
-        path.join(__dirname, '../renderer/index.html')
-    )
+    mainWindow.loadFile(path.join(__dirname, '../renderer/index.html'));
 }
 
-// Settings window
+// --- Settings window ---
 function createsettingsWindow() {
     settingsWindow = new BrowserWindow({
         width: 600,
@@ -47,10 +44,9 @@ function createsettingsWindow() {
     });
 }
 
+app.whenReady().then(createWindow);
 
-app.whenReady().then(createWindow)
-
-// Menu button responder 
+// --- Menu button responder ---
 ipcMain.on("open-second-window", () => {
     if (settingsWindow && !settingsWindow.isDestroyed()) {
         settingsWindow.focus();
@@ -73,26 +69,47 @@ app.on("window-all-closed", () => {
 });
 
 app.on("activate", () => {
-    if (BrowserWindow.getAllWindows().length === 0) createMainWindow();
+    if (BrowserWindow.getAllWindows().length === 0) createWindow();
 });
 
+// --- Stats handling ---
 
-// clicker.js Requests and handlig
+const assetPath = path.join(__dirname, '../assets/stats.json');
+const resourceDir = path.join(__dirname, '../../../extraResources');
+const resourcePath = path.join(resourceDir, 'stats.json');
+const defaultStatsPath = path.join(__dirname, '../assets/statsDefault.json');
 
-let statsFile
+let statsFile;
 
-const assetPath = path.join(__dirname, '../assets/stats.json')
-const resourcePath = path.join(__dirname, '../extraResources/stats.json')
+// Use extraResources if it exists, otherwise fallback to assets
+if (fs.existsSync(resourcePath)) {
+    statsFile = resourcePath;
+} else if (fs.existsSync(assetPath)) {
+    statsFile = assetPath;
+    console.log('chose asar');
+    
+} else {
+    // If extraResources/stats.json missing, create folder & copy default
+    if (!fs.existsSync(resourceDir)) fs.mkdirSync(resourceDir, { recursive: true });
+    fs.copyFileSync(defaultStatsPath, resourcePath);
+    statsFile = resourcePath;
+}
 
-statsFile = fs.existsSync(assetPath) ? assetPath : resourcePath
+console.log(statsFile);
 
+
+// Send stats to renderer
 ipcMain.on('RequestUserStats', (event) => {
-    const statParse = JSON.parse(fs.readFileSync(statsFile, 'utf8'))
-    console.log('got request', statParse)
-    event.sender.send('getUserStats', statParse)
-})
+    try {
+        const statParse = JSON.parse(fs.readFileSync(statsFile, 'utf8'));
+        console.log('got request', statParse);
+        event.sender.send('getUserStats', statParse);
+    } catch (err) {
+        console.error('Error reading stats file:', err);
+    }
+});
 
-// Recive anc process save request
+// Receive updated stats and save
 ipcMain.on('updateUserStats', (event, newStats) => {
     try {
         fs.writeFileSync(statsFile, JSON.stringify(newStats, null, 2), 'utf8');
@@ -101,5 +118,3 @@ ipcMain.on('updateUserStats', (event, newStats) => {
         console.error('Error saving stats file:', err);
     }
 });
-
-

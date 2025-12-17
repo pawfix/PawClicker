@@ -13,6 +13,16 @@
   "build": {
     "appId": "com.clicker.paw",
     "productName": "PawClicker",
+    "extraResources": [
+      {
+        "from": "./src/assets/",
+        "to": "extraResources",
+        "filter": [
+          "**/*",
+          "!clicker.js"
+        ]
+      }
+    ],
     "directories": {
       "output": "dist"
     },
@@ -22,7 +32,10 @@
     ],
     "asar": true,
     "win": {
-      "target": "portable"
+      "target": [
+        "portable",
+        "zip"
+      ]
     },
     "linux": {
       "target": "AppImage"
