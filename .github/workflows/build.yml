@@ -6,8 +6,9 @@ on:
       - main
     tags:
       - 'v*.*.*'
-    permissions:
-      contents: write
+
+permissions:
+  contents: write
 
 env:
   ELECTRON_CACHE: "~/.cache/electron"
