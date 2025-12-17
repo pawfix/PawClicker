@@ -97,7 +97,9 @@ jobs:
           key: node-modules-${{ hashFiles('package-lock.json') }}
 
       - name: Install Dependencies
-        run: npm ci
+        run: npm ci        
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
 
       - name: Build Linux tar.gz
         run: npx electron-builder --linux tar.gz
@@ -124,6 +126,8 @@ jobs:
 
       - name: Install Dependencies
         run: npm ci
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
 
       - name: Build Windows
         run: npx electron-builder --win portable
@@ -150,6 +154,8 @@ jobs:
 
       - name: Install Dependencies
         run: npm ci
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
 
       - name: Build Windows
         run: npx electron-builder --win zip
