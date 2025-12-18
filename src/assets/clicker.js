@@ -1,50 +1,54 @@
 const { ipcRenderer } = require('electron');
 
-let value = 0;
-let click = 1;
-let power = 1;
+// Centralized stats object
+let stats = {
+    value: 0,
+    click: 1,
+    power: 1
+};
 
-let statsLog;
-
-// Ask main.js to give me user stats from the save file
+// Ask main.js to give user stats from the save file
 ipcRenderer.on('getUserStats', (event, statParse) => {
-    const stats = statParse.stats;
+    // Use the stats object only
+    stats = statParse.stats || stats;
+    updateDisplay();
+    console.log('Stats received:', stats);
+});
 
-    value = stats.value;
-    click = stats.click;
-    power = stats.power; 
-    statsLog = statParse;
-
-    console.log(value + ' ' + click + ' ' + power)
-    console.log('full stats object:', statParse)
-})
-
-
+// Request stats from main
 function requestUserStats() {
-    ipcRenderer.send('RequestUserStats')
-    console.log('Requested value');
-
+    ipcRenderer.send('RequestUserStats');
+    console.log('Requested stats from main process');
 }
 
-function logStats() {
-    console.log(statsLog)
-}
-
+// Save current stats
 function saveStats() {
-    if (!statsLog) return;
-
-    // update statsLog with current values
-    statsLog.stats.value = value;
-    statsLog.stats.click = click;
-    statsLog.stats.power = power;
-
-    // send updated stats to main process to write to file
-    ipcRenderer.send('updateUserStats', statsLog);
-    console.log('Stats sent to main for saving:', statsLog);
+    ipcRenderer.send('updateUserStats', { stats }); // always safe
+    console.log('Stats sent to main for saving:', stats);
 }
 
+// Execute click
 function executeClick() {
-    value = value + (click * power);
-    console.log("value is " + value);
-    return value;
+    stats.value += stats.click * stats.power;
+    console.log('value is', stats.value);
+    updateDisplay();
 }
+
+// Update DOM display
+function updateDisplay() {
+    const cashEl = document.getElementById("cash");
+    const clickEl = document.getElementById("click");
+    const powerEl = document.getElementById("power");
+
+    if (!cashEl || !clickEl || !powerEl) return;
+
+    cashEl.innerText = `Cash: ${stats.value}$`;
+    clickEl.innerText = `Click Power: ${stats.click}`;
+    powerEl.innerText = `Power Multiplier: ${stats.power}`;
+}
+
+// Initial setup
+document.addEventListener('DOMContentLoaded', () => {
+    requestUserStats();
+    updateDisplay();
+});

@@ -7,17 +7,27 @@
         <link rel="stylesheet" href="styles/style.css">
         <script src="renderer.js"></script>
         <script src="../main/btn.js"></script>
-        <script src="../assets/clicker.js"></script>
+        <script src="../assets/clicker.js" defer></script>
     </head>
     <body>
         <header>
             <button onclick="closeCurrentWindow()" title="Close window">&#x26CC;</button>
             <button onclick="minimizeWindow()" title="Minimize Window">&#x268A;</button>
             <button onclick="maximizeWindow()" title="Maximize Window">&#9634;</button>
-            <button class="window" onclick="openSecondWindow()" title="Open Settings">&#9776;</button>
+            <img class="settingGear" src="../assets/UI/settings.svg" alt="settings" onclick="openSecondWindow()" title="Open Settings">
         </header>
         <main>
-            <div onclick="executeClick()" class="clicker"></div>
+            <div class="clicker">
+                <img src="../assets/UI/click.svg" onclick="executeClick()" class="clickBlock" alt="click">
+            </div>
+            <div class="rightPanel">
+                <div class="balance">
+                    <p id="cash">1</p>
+                    <p id="click">2</p>
+                    <p id="power">3</p>
+                </div>
+                <div class="store"></div>
+            </div>
         </main>
     </body>
 </html>
