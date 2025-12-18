@@ -1,15 +1,15 @@
 {
-    "stats": {
-        "value": 0,
-        "click": 1,
-        "power": 1
-    },
-    "advancements": {
-        "firstClick": false,
-        "openedSettings": false,
-        "clicks": {
-            "100": false,
-            "1000": false
-        }
+  "stats": {
+    "value": 0,
+    "click": 1,
+    "power": 1
+  },
+  "advancements": {
+    "firstClick": false,
+    "openedSettings": false,
+    "clicks": {
+      "100": false,
+      "1000": false
     }
+  }
 }

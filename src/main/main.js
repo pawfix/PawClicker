@@ -1,6 +1,7 @@
 const { app, BrowserWindow, ipcMain } = require('electron');
 const fs = require('fs');
 const path = require('path');
+const isDev = !app.isPackaged;
 
 let mainWindow;
 let settingsWindow;
@@ -74,42 +75,38 @@ app.on("activate", () => {
 
 // --- Stats handling ---
 
-const assetPath = path.join(__dirname, '../assets/stats.json');
-const resourceDir = path.join(__dirname, '../../../extraResources');
-const resourcePath = path.join(resourceDir, 'stats.json');
-const defaultStatsPath = path.join(__dirname, '../assets/statsDefault.json');
+// Paths
+const userDataDir = app.getPath('userData');       // Writable folder for user data
+const statsFile = path.join(userDataDir, 'stats.json');
+const defaultStatsFile = path.join(__dirname, '../assets/statsDefault.json'); // Bundled default stats
 
-let statsFile;
-
-// Use extraResources if it exists, otherwise fallback to assets
-if (fs.existsSync(resourcePath)) {
-    statsFile = resourcePath;
-} else if (fs.existsSync(assetPath)) {
-    statsFile = assetPath;
-    console.log('chose asar');
-    
-} else {
-    // If extraResources/stats.json missing, create folder & copy default
-    if (!fs.existsSync(resourceDir)) fs.mkdirSync(resourceDir, { recursive: true });
-    fs.copyFileSync(defaultStatsPath, resourcePath);
-    statsFile = resourcePath;
+// Ensure user data folder exists
+if (!fs.existsSync(userDataDir)) {
+    fs.mkdirSync(userDataDir, { recursive: true });
 }
 
-console.log(statsFile);
+// Copy default stats if missing
+if (!fs.existsSync(statsFile)) {
+    try {
+        fs.copyFileSync(defaultStatsFile, statsFile);
+        console.log('Default stats copied to userData folder:', statsFile);
+    } catch (err) {
+        console.error('Error copying default stats:', err);
+    }
+}
 
-
-// Send stats to renderer
+// IPC: send stats to renderer
 ipcMain.on('RequestUserStats', (event) => {
     try {
         const statParse = JSON.parse(fs.readFileSync(statsFile, 'utf8'));
-        console.log('got request', statParse);
+        console.log('Sending stats to renderer:', statParse);
         event.sender.send('getUserStats', statParse);
     } catch (err) {
         console.error('Error reading stats file:', err);
     }
 });
 
-// Receive updated stats and save
+// IPC: receive updated stats and save
 ipcMain.on('updateUserStats', (event, newStats) => {
     try {
         fs.writeFileSync(statsFile, JSON.stringify(newStats, null, 2), 'utf8');
