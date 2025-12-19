@@ -89,14 +89,11 @@ main div.clicker {
   background: var(--clicker-bg);
   background-size: 200% 200%, 100% 100%, 100% 100%, 100% 100%;
 }
-<<<<<<< HEAD
-=======
 @media screen and (max-width: 800px) {
   main div.clicker {
     width: 100vw;
   }
 }
->>>>>>> eman
 main div.clicker img.clickBlock {
   display: block;
   width: 50%;
@@ -123,8 +120,6 @@ main .rightPanel {
   display: flex;
   flex-direction: column;
 }
-<<<<<<< HEAD
-=======
 @media screen and (max-width: 800px) {
   main .rightPanel {
     display: none;
@@ -163,19 +158,23 @@ main button.rightPanelBtn:hover {
   -ms-transform: translateX(0) translateY(-50%);
   -o-transform: translateX(0) translateY(-50%);
 }
->>>>>>> eman
 main div.balance {
-  height: 20vh;
+  height: 40vh;
   width: 40vw;
   background-color: var(--secondary-color);
+  text-align: center;
   padding: 20px;
+}
+main div.balance p#cash {
+  font-size: 48px;
+  margin-bottom: 10px;
 }
 main div.balance p {
   font-size: 24px;
   margin-bottom: 20px;
 }
 main div.store {
-  height: 80vh;
+  height: 60vh;
   width: 40vw;
   background-color: var(--background-color);
 }/*# sourceMappingURL=style.css.map */
