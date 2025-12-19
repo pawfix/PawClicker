@@ -89,6 +89,11 @@ main div.clicker {
   background: var(--clicker-bg);
   background-size: 200% 200%, 100% 100%, 100% 100%, 100% 100%;
 }
+@media screen and (max-width: 800px) {
+  main div.clicker {
+    width: 100vw;
+  }
+}
 main div.clicker img.clickBlock {
   display: block;
   width: 50%;
@@ -114,6 +119,44 @@ main .rightPanel {
   height: 100vh;
   display: flex;
   flex-direction: column;
+}
+@media screen and (max-width: 800px) {
+  main .rightPanel {
+    display: none;
+  }
+}
+main button.rightPanelBtn {
+  display: none;
+  position: fixed;
+  top: 50%;
+  right: 0;
+  transform: translateY(-50%) translateX(100px);
+  -webkit-transform: translateY(-50%) translateX(100px);
+  -moz-transform: translateY(-50%) translateX(100px);
+  -ms-transform: translateY(-50%) translateX(100px);
+  -o-transform: translateY(-50%) translateX(100px);
+  height: 75px;
+  padding-left: 30px;
+  width: 130px;
+  border: none;
+  background-color: var(--secondary-color);
+  border-top-left-radius: 10px;
+  border-bottom-left-radius: 10px;
+}
+@media screen and (max-width: 800px) {
+  main button.rightPanelBtn {
+    display: block;
+  }
+}
+main button.rightPanelBtn:hover {
+  transform: translateX(0) translateY(-50%);
+  cursor: pointer;
+  filter: brightness(0.8);
+  -webkit-filter: brightness(0.8);
+  -webkit-transform: translateX(0) translateY(-50%);
+  -moz-transform: translateX(0) translateY(-50%);
+  -ms-transform: translateX(0) translateY(-50%);
+  -o-transform: translateX(0) translateY(-50%);
 }
 main div.balance {
   height: 20vh;

@@ -8,6 +8,7 @@
         <script src="renderer.js"></script>
         <script src="../main/btn.js"></script>
         <script src="../assets/clicker.js" defer></script>
+        <script src="ui.js" defer></script>
     </head>
     <body>
         <header>
@@ -19,11 +20,10 @@
 
         </header>
         <main>
-            <div onclick="executeClick()" class="clicker"></div>
             <div class="clicker">
                 <img src="../assets/UI/click.svg" onclick="executeClick()" class="clickBlock" alt="click">
             </div>
-            <button onclick="right_panel()" id="rightPanel">strałkaaa</button>
+            <button onclick="right_panel()" id="rightPanel" class="rightPanelBtn"><-------</button>
             <div class="rightPanel">
                 <div class="balance">
                     <p id="cash">1</p>
