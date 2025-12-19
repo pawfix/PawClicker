@@ -1,16 +1,18 @@
 const { app, BrowserWindow, ipcMain } = require('electron');
 const fs = require('fs');
 const path = require('path');
-const isDev = !app.isPackaged;
 
 let mainWindow;
 let settingsWindow;
 
-// --- Main window ---
+/* =========================
+   WINDOWS
+========================= */
+
 function createWindow() {
     mainWindow = new BrowserWindow({
-        width: 800,
-        height: 600,
+        width: 1200,
+        height: 800,
         frame: false,
         webPreferences: {
             preload: path.join(__dirname, 'preload.js'),
@@ -22,96 +24,188 @@ function createWindow() {
     mainWindow.loadFile(path.join(__dirname, '../renderer/index.html'));
 }
 
-// --- Settings window ---
-function createsettingsWindow() {
+function createSettingsWindow() {
     settingsWindow = new BrowserWindow({
         width: 600,
         height: 400,
         frame: false,
-        title: "Settings",
+        title: 'Settings',
         parent: mainWindow,
         modal: false,
         webPreferences: {
-            preload: path.join(__dirname, "preload.js"),
+            preload: path.join(__dirname, 'preload.js'),
             nodeIntegration: true,
             contextIsolation: false
         }
     });
 
-    settingsWindow.loadFile(path.join(__dirname, "../renderer/settings.html"));
+    settingsWindow.loadFile(path.join(__dirname, '../renderer/settings.html'));
 
-    settingsWindow.on("closed", () => {
+    settingsWindow.on('closed', () => {
         settingsWindow = null;
     });
 }
 
 app.whenReady().then(createWindow);
 
-// --- Menu button responder ---
-ipcMain.on("open-second-window", () => {
+ipcMain.on('open-second-window', () => {
     if (settingsWindow && !settingsWindow.isDestroyed()) {
         settingsWindow.focus();
         return;
     }
-    createsettingsWindow();
+    createSettingsWindow();
 });
 
-ipcMain.on("window-minimize", e => {
+ipcMain.on('window-minimize', e => {
     BrowserWindow.fromWebContents(e.sender).minimize();
 });
 
-ipcMain.on("window-maximize", e => {
+ipcMain.on('window-maximize', e => {
     const win = BrowserWindow.fromWebContents(e.sender);
     win.isMaximized() ? win.unmaximize() : win.maximize();
 });
 
-app.on("window-all-closed", () => {
-    if (process.platform !== "darwin") app.quit();
+app.on('window-all-closed', () => {
+    if (process.platform !== 'darwin') app.quit();
 });
 
-app.on("activate", () => {
+app.on('activate', () => {
     if (BrowserWindow.getAllWindows().length === 0) createWindow();
 });
 
-// --- Stats handling ---
+/* =========================
+   STATS / SHOP STATE
+========================= */
 
-// Paths
-const userDataDir = app.getPath('userData');       // Writable folder for user data
+const DEFAULT_STATS = {
+    value: 0,
+    click: 1,
+    power: 1
+};
+
+const DEFAULT_SHOP = {
+    clicks: 0,
+    power: 0,
+    auto: 0
+};
+
+
+const userDataDir = app.getPath('userData');
 const statsFile = path.join(userDataDir, 'stats.json');
-const defaultStatsFile = path.join(__dirname, '../assets/statsDefault.json'); // Bundled default stats
+const defaultStatsFile = path.join(__dirname, '../assets/statsDefault.json');
 
-// Ensure user data folder exists
+let stats = null;
+let shop = null;
+
 if (!fs.existsSync(userDataDir)) {
     fs.mkdirSync(userDataDir, { recursive: true });
 }
 
-// Copy default stats if missing
 if (!fs.existsSync(statsFile)) {
-    try {
-        fs.copyFileSync(defaultStatsFile, statsFile);
-        console.log('Default stats copied to userData folder:', statsFile);
-    } catch (err) {
-        console.error('Error copying default stats:', err);
-    }
+    fs.copyFileSync(defaultStatsFile, statsFile);
 }
 
-// IPC: send stats to renderer
-ipcMain.on('RequestUserStats', (event) => {
-    try {
-        const statParse = JSON.parse(fs.readFileSync(statsFile, 'utf8'));
-        console.log('Sending stats to renderer:', statParse);
-        event.sender.send('getUserStats', statParse);
-    } catch (err) {
-        console.error('Error reading stats file:', err);
-    }
+function loadStats() {
+    const data = JSON.parse(fs.readFileSync(statsFile, 'utf8'));
+
+    stats = {
+        ...DEFAULT_STATS,
+        ...(data.stats || {})
+    };
+
+    shop = {
+        ...DEFAULT_SHOP,
+        ...(data.shop || {})
+    };
+
+    // Ensure click/power in shop mirror stats (stats are authoritative)
+    shop.clicks = stats.click;
+    shop.power = stats.power;
+}
+
+
+function saveAll() {
+    fs.writeFileSync(
+        statsFile,
+        JSON.stringify({ stats, shop }, null, 2),
+        'utf8'
+    );
+}
+
+loadStats();
+
+/* =========================
+   IPC
+========================= */
+
+ipcMain.on('RequestUserStats', event => {
+    event.sender.send('getUserStats', { stats, shop });
 });
 
-// IPC: receive updated stats and save
-ipcMain.on('updateUserStats', (event, newStats) => {
-    try {
-        fs.writeFileSync(statsFile, JSON.stringify(newStats, null, 2), 'utf8');
-        console.log('Stats successfully saved:', newStats);
-    } catch (err) {
-        console.error('Error saving stats file:', err);
+ipcMain.on('updateUserStats', (event, payload) => {
+    if (payload.stats) {
+        stats = { ...stats, ...payload.stats };
     }
+
+    if (payload.shop) {
+        shop = { ...shop, ...payload.shop };
+        if (typeof shop.clicks !== 'undefined') stats.click = shop.clicks;
+        if (typeof shop.power !== 'undefined') stats.power = shop.power;
+    }
+
+    shop.clicks = stats.click;
+    shop.power = stats.power;
+
+;
+
+    saveAll();
+
+    // Send updated data back to the sender immediately
+    event.sender.send('getUserStats', { stats, shop });
+
+    // Also broadcast to all windows
+    BrowserWindow.getAllWindows().forEach(win => {
+        win.webContents.send('getUserStats', { stats, shop });
+    });
+});
+
+
+/* =========================
+   SHOP LOGIC
+========================= */
+
+ipcMain.on('shop-buy', (event, { item, cost }) => {
+    if (!shop || !stats) return;
+    if (stats.value < cost) return;
+
+    stats.value -= cost;
+
+    switch (item) {
+        case 'click':
+            // buying click increases stats.click and mirror to shop.clicks
+            stats.click = (stats.click || 0) + 1;
+            shop.clicks = stats.click;
+            break;
+        case 'power':
+            // buying power increases stats.power and mirror to shop.power
+            stats.power = (stats.power || 1) + 1;
+            shop.power = stats.power;
+            break;
+        case 'auto':
+            shop.auto = (shop.auto || 0) + 1;
+            break;
+    }
+
+    saveAll();
+
+    BrowserWindow.getAllWindows().forEach(win => {
+        win.webContents.send('getUserStats', { stats, shop });
+    });
+});
+
+
+saveAll();
+
+BrowserWindow.getAllWindows().forEach(win => {
+    win.webContents.send('getUserStats', { stats, shop });
 });

@@ -18,7 +18,6 @@ ipcRenderer.on('getUserStats', (event, statParse) => {
 // Request stats from main
 function requestUserStats() {
     ipcRenderer.send('RequestUserStats');
-    console.log('Requested stats from main process');
 }
 
 // Save current stats
@@ -30,7 +29,7 @@ function saveStats() {
 // Execute click
 function executeClick() {
     stats.value += stats.click * stats.power;
-    console.log('value is', stats.value);
+    saveStats();
     updateDisplay();
 }
 

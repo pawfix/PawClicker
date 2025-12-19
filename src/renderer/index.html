@@ -9,13 +9,13 @@
         <script src="../main/btn.js"></script>
         <script src="../assets/clicker.js" defer></script>
         <script src="ui.js" defer></script>
+        <script src="../assets/shop.js" defer></script>
     </head>
     <body>
         <header>
             <button onclick="closeCurrentWindow()" title="Close window">&#x26CC;</button>
             <button onclick="minimizeWindow()" title="Minimize Window">&#x268A;</button>
             <button onclick="maximizeWindow()" title="Maximize Window">&#9634;</button>
-            <button class="window" onclick="openSecondWindow()" title="Open Settings">&#9776;</button>
             <img class="settingGear" src="../assets/UI/settings.svg" alt="settings" onclick="openSecondWindow()" title="Open Settings">
 
         </header>
@@ -30,8 +30,26 @@
                     <p id="click">2</p>
                     <p id="power">3</p>
                 </div>
-                <div class="store"></div>
+                <div class="store">
+                    <h1>Store</h1>
+                    <div id="shopItems" class="shopItems">
+                    </div>
+                </div>
             </div>
         </main>
+        <script>
+            function resetData() {
+                stats.value = 0;
+                stats.click = 1;
+                stats.power = 1;
+
+                shop.clicks = 0;
+                shop.powers = 0;
+                shop.auto = 0;
+                shop.value = 0;
+                saveStats();
+                updateDisplay();
+            }
+        </script>
     </body>
 </html>

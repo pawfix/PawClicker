@@ -11,5 +11,10 @@
       "100": false,
       "1000": false
     }
+  },
+  "shop": {
+    "clicks": 0,
+    "power": 0,
+    "auto": 0
   }
 }
