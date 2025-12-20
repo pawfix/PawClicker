@@ -4,6 +4,8 @@ on:
   push:
     branches:
       - main
+    tags:
+      - 'v*.*.*'
 
 permissions:
   contents: write
@@ -202,11 +204,12 @@ jobs:
         id: release_name_tag
         run: |
           SHORT_HASH=$(git rev-parse --short HEAD)
-          DATE=$(date +%Y%m%d)
-          RELEASE_NAME="PawClicker -  ${DATE}-${SHORT_HASH}"
-          RELEASE_TAG="v${DATE}-${SHORT_HASH}"
+          DATE_TIME=$(date -u +%Y%m%d-%H%M)
+          RELEASE_NAME="PawClicker - ${DATE_TIME}-${SHORT_HASH}"
+          RELEASE_TAG="v${DATE_TIME}-${SHORT_HASH}"
           echo "RELEASE_NAME=${RELEASE_NAME}" >> $GITHUB_ENV
           echo "RELEASE_TAG=${RELEASE_TAG}" >> $GITHUB_ENV
+
 
       - name: Create Release
         uses: ncipollo/release-action@v1
