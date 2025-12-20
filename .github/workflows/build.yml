@@ -112,8 +112,8 @@ jobs:
           path: dist/*.tar.gz
 
 # ===================== WINDOWS BUILD =====================
-  build-win-portable:
-    name: Build Windows Portable
+  build-win-installer:
+    name: Build Windows NSIS inataller
     runs-on: windows-latest
     needs: setup
     env:
@@ -135,13 +135,13 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
 
-      - name: Build Windows Portable
-        run: npx electron-builder --win portable
+      - name: Build Windows installer
+        run: npx electron-builder --win nsis
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: windows-portable
+          name: windows-installer
           path: dist/*.exe
 
   build-win-zip:
@@ -173,7 +173,7 @@ jobs:
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: windows-zip
+          name: windows
           path: dist/*.zip
 
 # ===================== RELEASE =====================
