@@ -219,3 +219,24 @@ saveAll();
 BrowserWindow.getAllWindows().forEach(win => {
     win.webContents.send('getUserStats', { stats, shop });
 });
+
+
+
+/* =========================
+   AUTO CLICKER LOGIC
+========================= */
+
+
+// CHECK THIS LATER 
+setInterval(() => {
+    if (!shop || !stats) return;
+    if (shop.auto > 0) {
+        const increment = shop.auto * stats.power;
+        stats.value += increment;
+    }
+    saveAll();
+    BrowserWindow.getAllWindows().forEach(win => {
+        win.webContents.send('getUserStats', { stats, shop });
+    });
+}, 1000);
+
