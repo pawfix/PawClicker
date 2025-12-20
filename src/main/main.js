@@ -25,9 +25,15 @@ function createWindow() {
 }
 
 function createSettingsWindow() {
+    const width = 600;
+    const height = 300;
+
     settingsWindow = new BrowserWindow({
-        width: 600,
-        height: 400,
+        width,
+        height,
+        minWidth: width,
+        minHeight: height,
+        resizable: true,
         frame: false,
         title: 'Settings',
         parent: mainWindow,
@@ -39,12 +45,15 @@ function createSettingsWindow() {
         }
     });
 
+    settingsWindow.setAspectRatio(width / height);
+
     settingsWindow.loadFile(path.join(__dirname, '../renderer/settings.html'));
 
     settingsWindow.on('closed', () => {
         settingsWindow = null;
     });
 }
+
 
 app.whenReady().then(createWindow);
 
@@ -156,7 +165,7 @@ ipcMain.on('updateUserStats', (event, payload) => {
     shop.clicks = stats.click;
     shop.power = stats.power;
 
-;
+    ;
 
     saveAll();
 

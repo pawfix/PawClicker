@@ -1,0 +1,51 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 8vh;
+    background-color: transparent;
+    z-index: 200;
+    -webkit-app-region: drag;
+}
+img.bg {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+}
+
+div.content {
+    padding: 4%;
+    width: 100vw;
+    height: 100vh;
+    background: url(../../../assets/UI/menuFrame.png);
+    background-size: cover;
+    display: flex;
+    flex-direction: column;
+    background-color: black;
+    button.cancelBtn {
+        width: 95%;
+        margin: 2.5%;
+        height: 15%;
+        border-radius: 250px;
+        background-color: #ff4d4d;
+        -webkit-border-radius: 250px;
+        -moz-border-radius: 250px;
+        -ms-border-radius: 250px;
+        -o-border-radius: 250px;
+        font-size: 2em;
+        font-weight: bold;
+        &:hover {
+            filter: brightness(0.8);
+            -webkit-filter: brightness(0.8);
+            cursor: pointer;
+        }
+    }
+}
