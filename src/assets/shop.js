@@ -36,12 +36,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 function shopBuy(item) {
+
     let cost = 0;
 
     switch (item) {
-        case 'click': cost = 10; break;
-        case 'power': cost = 50; break;
-        case 'auto': cost = 100; break;
+        case 'click': cost = (shop.clicks + 1)*10; break;
+        case 'power': cost = (shop.power + 1)*50; break;
+        case 'auto': cost = (shop.auto + 1)*100; break;
         default:
             console.log('Unknown shop item:', item);
             return;
@@ -58,8 +59,8 @@ ipcRenderer.on('getUserStats', (event, statParse) => {
     const shopItemsContainer = document.getElementById('shopItems');
     if (!shopItemsContainer) return;
     shopItemsContainer.innerHTML = `
-        <button onclick="shopBuy('click')">Upgrade click (${shop.clicks}) - 10$</button>
-        <button onclick="shopBuy('power')">Upgrade power (${shop.power}) - 50$</button>
-        <button onclick="shopBuy('auto')">Upgrade auto clicker (${shop.auto}) - 100$</button>
+        <button onclick="shopBuy('click')">Upgrade click (${shop.clicks}) - ${(shop.clicks + 1)*10}$</button>
+        <button onclick="shopBuy('power')">Upgrade power (${shop.power}) - ${(shop.power + 1)*50}$</button>
+        <button onclick="shopBuy('auto')">Upgrade auto clicker (${shop.auto}) - ${(shop.auto + 1)*100}$</button>
     `;
 });
