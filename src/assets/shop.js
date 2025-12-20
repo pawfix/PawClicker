@@ -34,35 +34,48 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // Update value from outside
 
-
-function shopBuy(item) {
-    let cost = 0;
-
+// Get Item Price
+function getShopPrice(item) {
     switch (item) {
-        case 'click': cost = 10; break;
-        case 'power': cost = 50; break;
-        case 'auto': cost = 100; break;
-        default:
-            console.log('Unknown shop item:', item);
-            return;
+        case 'click': return 10 * shop.clicks;
+        case 'power': return 100 * shop.power;
+        case 'auto': return 250 * shop.auto;
+        default: return 0;
+    }
+}
+
+// Buy Item
+function shopBuy(item) {
+    const cost = getShopPrice(item);
+
+    if (!cost) {
+        console.log('Unknown shop item:', item);
+        return;
     }
 
     ipcRenderer.send('shop-buy', { item, cost });
 }
 
-// Update UI shop items based on stats
+// Make cost dynamic
 ipcRenderer.on('getUserStats', (event, statParse) => {
     if (!statParse.stats) return;
-    const stats = statParse.stats;
 
     const shopItemsContainer = document.getElementById('shopItems');
     if (!shopItemsContainer) return;
+
     shopItemsContainer.innerHTML = `
-        <button onclick="shopBuy('click')">Upgrade click (${shop.clicks}) - 10$</button>
-        <button onclick="shopBuy('power')">Upgrade power (${shop.power}) - 50$</button>
-        <button onclick="shopBuy('auto')">Upgrade auto clicker (${shop.auto}) - 100$</button>
+        <button onclick="shopBuy('click')">
+            Upgrade click (${shop.clicks}) - ${getShopPrice('click')}$
+        </button>
+        <button onclick="shopBuy('power')">
+            Upgrade power (${shop.power}) - ${getShopPrice('power')}$
+        </button>
+        <button onclick="shopBuy('auto')">
+            Upgrade auto clicker (${shop.auto}) - ${getShopPrice('auto')}$
+        </button>
     `;
 });
+
 
 // Toggle auto clicker
 

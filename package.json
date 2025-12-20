@@ -19,7 +19,10 @@
         "from": "./src/assets/",
         "to": "extraResources",
         "filter": [
-          "**/*",
+          "stats.json",
+          "!build/*",
+          "!UI/*",
+          "!shop.js",
           "!clicker.js"
         ]
       }
@@ -48,7 +51,7 @@
     }
   },
   "devDependencies": {
-    "electron": "^30.0.0",
+    "electron": "^39.2.7",
     "electron-builder": "^24.0.0",
     "electron-is-dev": "^3.0.1"
   }

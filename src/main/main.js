@@ -5,6 +5,9 @@ const path = require('path');
 let mainWindow;
 let settingsWindow;
 
+// TEST
+console.log('main.js directory:', __dirname);
+
 /* =========================
    WINDOWS
 ========================= */
@@ -54,7 +57,6 @@ function createSettingsWindow() {
     });
 }
 
-
 app.whenReady().then(createWindow);
 
 ipcMain.on('open-second-window', () => {
@@ -83,7 +85,7 @@ app.on('activate', () => {
 });
 
 /* =========================
-   STATS / SHOP STATE
+   DEFAULT STATE
 ========================= */
 
 const DEFAULT_STATS = {
@@ -99,21 +101,39 @@ const DEFAULT_SHOP = {
     value: 0
 };
 
+/* =========================
+   STATS FILE RESOLUTION
+========================= */
 
-const userDataDir = app.getPath('userData');
-const statsFile = path.join(userDataDir, 'stats.json');
-const defaultStatsFile = path.join(__dirname, '../assets/statsDefault.json');
+const extraResourcesDir = path.join(__dirname, '../../../extraResources');
+const userStatsFile = path.join(extraResourcesDir, 'stats.json');
+
+// Ensure the extraResources folder exists
+if (!fs.existsSync(extraResourcesDir)) {
+    fs.mkdirSync(extraResourcesDir, { recursive: true });
+    console.log('Created extraResources folder:', extraResourcesDir);
+}
+
+// If stats.json doesn't exist, create it with default values
+if (!fs.existsSync(userStatsFile)) {
+    fs.writeFileSync(
+        userStatsFile,
+        JSON.stringify({ stats: DEFAULT_STATS, shop: DEFAULT_SHOP }, null, 2),
+        'utf8'
+    );
+    console.log('Created new stats.json in extraResources with default values');
+}
+
+const statsFile = userStatsFile;
+console.log('Using stats file:', statsFile);
+
+
+/* =========================
+   STATE
+========================= */
 
 let stats = null;
 let shop = null;
-
-if (!fs.existsSync(userDataDir)) {
-    fs.mkdirSync(userDataDir, { recursive: true });
-}
-
-if (!fs.existsSync(statsFile)) {
-    fs.copyFileSync(defaultStatsFile, statsFile);
-}
 
 function loadStats() {
     const data = JSON.parse(fs.readFileSync(statsFile, 'utf8'));
@@ -128,11 +148,9 @@ function loadStats() {
         ...(data.shop || {})
     };
 
-    // Ensure click/power in shop mirror stats (stats are authoritative)
     shop.clicks = stats.click;
     shop.power = stats.power;
 }
-
 
 function saveAll() {
     fs.writeFileSync(
@@ -166,19 +184,12 @@ ipcMain.on('updateUserStats', (event, payload) => {
     shop.clicks = stats.click;
     shop.power = stats.power;
 
-    ;
-
     saveAll();
 
-    // Send updated data back to the sender immediately
-    event.sender.send('getUserStats', { stats, shop });
-
-    // Also broadcast to all windows
     BrowserWindow.getAllWindows().forEach(win => {
         win.webContents.send('getUserStats', { stats, shop });
     });
 });
-
 
 /* =========================
    SHOP LOGIC
@@ -192,17 +203,15 @@ ipcMain.on('shop-buy', (event, { item, cost }) => {
 
     switch (item) {
         case 'click':
-            // buying click increases stats.click and mirror to shop.clicks
-            stats.click = (stats.click || 0) + 1;
+            stats.click += 1;
             shop.clicks = stats.click;
             break;
         case 'power':
-            // buying power increases stats.power and mirror to shop.power
-            stats.power = (stats.power || 1) + 1;
+            stats.power += 1;
             shop.power = stats.power;
             break;
         case 'auto':
-            shop.auto = (shop.auto || 0) + 1;
+            shop.auto += 1;
             break;
     }
 
@@ -213,41 +222,24 @@ ipcMain.on('shop-buy', (event, { item, cost }) => {
     });
 });
 
-
-saveAll();
-
-BrowserWindow.getAllWindows().forEach(win => {
-    win.webContents.send('getUserStats', { stats, shop });
-});
-
-
-
 /* =========================
-   AUTO CLICKER LOGIC
+   AUTO CLICKER
 ========================= */
 
 let autoClickerToggle = true;
 
 ipcMain.on('toggle-auto-clicker', () => {
-    if (autoClickerToggle) {
-        autoClickerToggle = false;
-    } else {
-        autoClickerToggle = true;
-    }
+    autoClickerToggle = !autoClickerToggle;
 });
 
 setInterval(() => {
-    if (autoClickerToggle && shop && stats) {
-        if (shop.auto <= 0) return;
-        if (shop.auto > 0) {
-            const increment = shop.auto * stats.power;
-            stats.value += increment;
-        }
-        // console.log('Auto clicker added value. New value:', stats.value);
-        saveAll();
-        BrowserWindow.getAllWindows().forEach(win => {
-            win.webContents.send('getUserStats', { stats, shop });
-        });
-    }
-}, 1000);
+    if (!autoClickerToggle || !shop || !stats) return;
+    if (shop.auto <= 0) return;
 
+    stats.value += shop.auto * stats.power;
+    saveAll();
+
+    BrowserWindow.getAllWindows().forEach(win => {
+        win.webContents.send('getUserStats', { stats, shop });
+    });
+}, 1000);
