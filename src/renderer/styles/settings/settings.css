@@ -33,7 +33,7 @@ div.content {
   flex-direction: column;
   background-color: black;
 }
-div.content button.cancelBtn {
+div.content button.Btn {
   width: 95%;
   margin: 2.5%;
   height: 15%;
@@ -46,7 +46,7 @@ div.content button.cancelBtn {
   font-size: 2em;
   font-weight: bold;
 }
-div.content button.cancelBtn:hover {
+div.content button.Btn:hover {
   filter: brightness(0.8);
   -webkit-filter: brightness(0.8);
   cursor: pointer;

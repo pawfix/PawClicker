@@ -93,9 +93,10 @@ const DEFAULT_STATS = {
 };
 
 const DEFAULT_SHOP = {
-    clicks: 0,
-    power: 0,
-    auto: 0
+    clicks: 1,
+    power: 1,
+    auto: 0,
+    value: 0
 };
 
 
@@ -218,3 +219,35 @@ saveAll();
 BrowserWindow.getAllWindows().forEach(win => {
     win.webContents.send('getUserStats', { stats, shop });
 });
+
+
+
+/* =========================
+   AUTO CLICKER LOGIC
+========================= */
+
+let autoClickerToggle = true;
+
+ipcMain.on('toggle-auto-clicker', () => {
+    if (autoClickerToggle) {
+        autoClickerToggle = false;
+    } else {
+        autoClickerToggle = true;
+    }
+});
+
+setInterval(() => {
+    if (autoClickerToggle && shop && stats) {
+        if (shop.auto <= 0) return;
+        if (shop.auto > 0) {
+            const increment = shop.auto * stats.power;
+            stats.value += increment;
+        }
+        // console.log('Auto clicker added value. New value:', stats.value);
+        saveAll();
+        BrowserWindow.getAllWindows().forEach(win => {
+            win.webContents.send('getUserStats', { stats, shop });
+        });
+    }
+}, 1000);
+
