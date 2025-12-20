@@ -51,3 +51,15 @@ document.addEventListener('DOMContentLoaded', () => {
     requestUserStats();
     updateDisplay();
 });
+
+// Get save dir
+
+// Listen once for the stats file
+ipcRenderer.on('UsingStatsFile', (event, statsFile) => {
+    console.log('Stats file path from main:', statsFile);
+});
+
+// Function to request it
+function RequestSaveDir() {
+    ipcRenderer.send('requestSaveDir');
+}

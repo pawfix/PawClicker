@@ -108,13 +108,21 @@ const DEFAULT_SHOP = {
 const extraResourcesDir = path.join(__dirname, '../../../extraResources');
 const userStatsFile = path.join(extraResourcesDir, 'stats.json');
 
-// Ensure the extraResources folder exists
 if (!fs.existsSync(extraResourcesDir)) {
-    fs.mkdirSync(extraResourcesDir, { recursive: true });
-    console.log('Created extraResources folder:', extraResourcesDir);
+    try {
+        fs.mkdirSync(extraResourcesDir, { recursive: true });
+        console.log('Created extraResources folder:', extraResourcesDir);
+        BrowserWindow.getAllWindows().forEach(win => {
+            win.webContents.send('log-save-dir', 'Created extraResources folder: ' + extraResourcesDir);
+        });
+    } catch (err) {
+        console.log('error: ' + err);
+        BrowserWindow.getAllWindows().forEach(win => {
+            win.webContents.send('log-save-dir', 'error: ' + err);
+        });
+    }
 }
 
-// If stats.json doesn't exist, create it with default values
 if (!fs.existsSync(userStatsFile)) {
     fs.writeFileSync(
         userStatsFile,
@@ -122,10 +130,20 @@ if (!fs.existsSync(userStatsFile)) {
         'utf8'
     );
     console.log('Created new stats.json in extraResources with default values');
+    BrowserWindow.getAllWindows().forEach(win => {
+        win.webContents.send('log-save-dir', 'Created new stats.json in extraResources with default values');
+    });
 }
+
 
 const statsFile = userStatsFile;
 console.log('Using stats file:', statsFile);
+
+ipcMain.on('requestSaveDir', (event) => {
+    console.log('Got Request for stats file:', statsFile);
+    event.sender.send('UsingStatsFile', statsFile);
+});
+
 
 
 /* =========================
