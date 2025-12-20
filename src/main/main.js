@@ -93,9 +93,10 @@ const DEFAULT_STATS = {
 };
 
 const DEFAULT_SHOP = {
-    clicks: 0,
-    power: 0,
-    auto: 0
+    clicks: 1,
+    power: 1,
+    auto: 0,
+    value: 0
 };
 
 
