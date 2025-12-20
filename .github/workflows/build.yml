@@ -181,7 +181,7 @@ jobs:
     name: Create GitHub Release
     runs-on: ubuntu-latest
     needs:
-      - build-win-portable
+      - build-win-installer
       - build-linux-appimage
       - build-linux-tar
       - build-win-zip
