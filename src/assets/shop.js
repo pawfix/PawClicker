@@ -63,3 +63,10 @@ ipcRenderer.on('getUserStats', (event, statParse) => {
         <button onclick="shopBuy('auto')">Upgrade auto clicker (${shop.auto}) - 100$</button>
     `;
 });
+
+// Toggle auto clicker
+
+function toggleAutoClicker() {
+    ipcRenderer.send('toggle-auto-clicker');
+    console.log('Toggled auto clicker');
+}

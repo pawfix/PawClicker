@@ -226,17 +226,28 @@ BrowserWindow.getAllWindows().forEach(win => {
    AUTO CLICKER LOGIC
 ========================= */
 
+let autoClickerToggle = true;
 
-// CHECK THIS LATER 
-setInterval(() => {
-    if (!shop || !stats) return;
-    if (shop.auto > 0) {
-        const increment = shop.auto * stats.power;
-        stats.value += increment;
+ipcMain.on('toggle-auto-clicker', () => {
+    if (autoClickerToggle) {
+        autoClickerToggle = false;
+    } else {
+        autoClickerToggle = true;
     }
-    saveAll();
-    BrowserWindow.getAllWindows().forEach(win => {
-        win.webContents.send('getUserStats', { stats, shop });
-    });
+});
+
+setInterval(() => {
+    if (autoClickerToggle && shop && stats) {
+        if (shop.auto <= 0) return;
+        if (shop.auto > 0) {
+            const increment = shop.auto * stats.power;
+            stats.value += increment;
+        }
+        // console.log('Auto clicker added value. New value:', stats.value);
+        saveAll();
+        BrowserWindow.getAllWindows().forEach(win => {
+            win.webContents.send('getUserStats', { stats, shop });
+        });
+    }
 }, 1000);
 

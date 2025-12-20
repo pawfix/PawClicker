@@ -170,6 +170,23 @@ main div.balance {
   text-align: center;
   padding: 20px;
 }
+main div.balance button {
+  background-color: var(--background-color);
+  border: none;
+  border-radius: 15px;
+  -webkit-border-radius: 15px;
+  -moz-border-radius: 15px;
+  -ms-border-radius: 15px;
+  -o-border-radius: 15px;
+  padding: 10px;
+  font-size: 1.2rem;
+  margin-top: 10px;
+}
+main div.balance button:hover {
+  cursor: pointer;
+  filter: brightness(0.8);
+  -webkit-filter: brightness(0.8);
+}
 main div.balance p#cash {
   font-size: 48px;
   margin-bottom: 10px;
