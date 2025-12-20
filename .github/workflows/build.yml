@@ -205,7 +205,7 @@ jobs:
         run: |
           SHORT_HASH=$(git rev-parse --short HEAD)
           DATE=$(date +%Y%m%d)
-          RELEASE_NAME="Release ${DATE}-${SHORT_HASH}"
+          RELEASE_NAME="PawClicker -  ${DATE}-${SHORT_HASH}"
           RELEASE_TAG="v${DATE}-${SHORT_HASH}"
           echo "RELEASE_NAME=${RELEASE_NAME}" >> $GITHUB_ENV
           echo "RELEASE_TAG=${RELEASE_TAG}" >> $GITHUB_ENV
