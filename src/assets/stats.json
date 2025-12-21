@@ -9,7 +9,20 @@
     "openedSettings": false,
     "clicks": {
       "100": false,
-      "1000": false
+      "1000": false,
+      "5000": false,
+      "50000": false
+    },
+    "cash": {
+      "100": false,
+      "1000": false,
+      "5000": false,
+      "50000": false
+    },
+    "auto": {
+      "1": false,
+      "5": false,
+      "25": false
     }
   },
   "shop": {
