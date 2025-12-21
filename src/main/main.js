@@ -4,6 +4,7 @@ const path = require('path');
 
 let mainWindow;
 let settingsWindow;
+let advancementsWindow;
 
 // TEST
 console.log('main.js directory:', __dirname);
@@ -54,6 +55,38 @@ function createSettingsWindow() {
 
     settingsWindow.on('closed', () => {
         settingsWindow = null;
+        mainWindow.focus();
+    });
+}
+
+function createAdvanementsWindow() {
+    const width = 600;
+    const height = 300;
+
+    advancementsWindow = new BrowserWindow({
+        width,
+        height,
+        minWidth: width,
+        minHeight: height,
+        resizable: true,
+        frame: false,
+        title: 'Advancements',
+        parent: mainWindow,
+        modal: false,
+        webPreferences: {
+            preload: path.join(__dirname, 'preload.js'),
+            nodeIntegration: true,
+            contextIsolation: false
+        }
+    });
+
+    advancementsWindow.setAspectRatio(width / height);
+
+    advancementsWindow.loadFile(path.join(__dirname, '../renderer/advancements.html'));
+
+    advancementsWindow.on('closed', () => {
+        advancementsWindow = null;
+        mainWindow.focus();
     });
 }
 
@@ -65,6 +98,14 @@ ipcMain.on('open-second-window', () => {
         return;
     }
     createSettingsWindow();
+});
+
+ipcMain.on('open-advancements-window', () => {
+    if (advancementsWindow && !advancementsWindow.isDestroyed()) {
+        advancementsWindow.focus();
+        return;
+    }
+    createAdvanementsWindow();
 });
 
 ipcMain.on('window-minimize', e => {
@@ -101,6 +142,28 @@ const DEFAULT_SHOP = {
     value: 0
 };
 
+const DEFAULT_ADVANCEMENTS = {
+    firstClick: false,
+    openedSettings: false,
+    clicks: {
+        100: false,
+        1000: false,
+        5000: false,
+        50000: false
+    },
+    cash: {
+        100: false,
+        1000: false,
+        5000: false,
+        50000: false
+    },
+    auto: {
+        1: false,
+        5: false,
+        25: false
+    }
+}
+
 /* =========================
    STATS FILE RESOLUTION
 ========================= */
@@ -126,7 +189,15 @@ if (!fs.existsSync(extraResourcesDir)) {
 if (!fs.existsSync(userStatsFile)) {
     fs.writeFileSync(
         userStatsFile,
-        JSON.stringify({ stats: DEFAULT_STATS, shop: DEFAULT_SHOP }, null, 2),
+        JSON.stringify(
+            {
+                stats: DEFAULT_STATS,
+                shop: DEFAULT_SHOP,
+                advancements: DEFAULT_ADVANCEMENTS
+            },
+            null,
+            2
+        ),
         'utf8'
     );
     console.log('Created new stats.json in extraResources with default values');
@@ -152,6 +223,7 @@ ipcMain.on('requestSaveDir', (event) => {
 
 let stats = null;
 let shop = null;
+let advancements = null
 
 function loadStats() {
     const data = JSON.parse(fs.readFileSync(statsFile, 'utf8'));
@@ -166,6 +238,24 @@ function loadStats() {
         ...(data.shop || {})
     };
 
+    advancements = {
+        firstClick: data.advancements?.firstClick ?? DEFAULT_ADVANCEMENTS.firstClick,
+        openedSettings: data.advancements?.openedSettings ?? DEFAULT_ADVANCEMENTS.openedSettings,
+        clicks: {
+            ...DEFAULT_ADVANCEMENTS.clicks,
+            ...(data.advancements?.clicks || {})
+        },
+        cash: {
+            ...DEFAULT_ADVANCEMENTS.cash,
+            ...(data.advancements?.cash || {})
+        },
+        auto: {
+            ...DEFAULT_ADVANCEMENTS.auto,
+            ...(data.advancements?.auto || {})
+        }
+    };
+
+
     shop.clicks = stats.click;
     shop.power = stats.power;
 }
@@ -173,7 +263,7 @@ function loadStats() {
 function saveAll() {
     fs.writeFileSync(
         statsFile,
-        JSON.stringify({ stats, shop }, null, 2),
+        JSON.stringify({ stats, shop, advancements }, null, 2),
         'utf8'
     );
 }
@@ -185,7 +275,8 @@ loadStats();
 ========================= */
 
 ipcMain.on('RequestUserStats', event => {
-    event.sender.send('getUserStats', { stats, shop });
+    event.sender.send('getUserStats', { stats, shop, advancements });
+    console.log({ stats, shop, advancements })
 });
 
 ipcMain.on('updateUserStats', (event, payload) => {
