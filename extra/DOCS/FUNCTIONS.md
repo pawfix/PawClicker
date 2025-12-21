@@ -2,29 +2,30 @@
 
 ---
 
-- [main.js](#main)
-    - [Windows](#mainWindow)
-    - [State](#mainState)
-- [clicker.js](#clicker)
-    - [Stat control](#clickerStat)
-    - [Game mechanics](#clickerGame)
-- [shop.js](#shop)
-    - [Shop utilities](#shopUtility)
-    - [Display](#shopDisplay)
-    - [Game mechanics](#shopGame)
-- [btn.js](#btn)
-    - [Opening windows](#btnOpen)
-    - [Managing current windows](#btnManage)
+- [main.js](#mainjs)
+    - [Windows](#windows)
+    - [State](#state)
+- [clicker.js](#clickerjs)
+    - [Stat control](#stat-control)
+    - [Display](#display)
+    - [Game mechanics](#game-mechanics)
+- [shop.js](#shopjs)
+    - [Shop utilities](#shop-utilities)
+    - [Display](#display-1)
+    - [Game mechanics](#game-mechanics-1)
+- [btn.js](#btnjs)
+    - [Opening windows](#opening-windows)
+    - [Managing current windows](#managing-current-windows)
 
 ---
 
-## Main.js <a name="main"></a>
+## Main.js
 
 [View raw file](https://raw.githubusercontent.com/pawfix/PawClicker/refs/heads/feature/achivements/src/main/main.js)
 
 ### FUNCTIONS FROM MAIN.JS ARE NOT CALLABLE FROM ANY WINDOW
 
-### Windows <a name="mainWindow"></a>
+### Windows
 
 <br>
 
@@ -65,7 +66,7 @@ Window options:
 
 <br><br>
 
-### State <a name="mainState"></a>
+### State
 
 <br>
 
@@ -93,7 +94,6 @@ Returned data:
 ~~~javascript
 saveAll()
 ~~~
-<a name="saveAll"></a>
 
 Saves all data.  
 Writes received data to found JSON file.
@@ -102,18 +102,17 @@ Writes received data to found JSON file.
 
 ---
 
-## clicker.js <a name="clicker"></a>
+## clicker.js
 
 [View raw file](https://raw.githubusercontent.com/pawfix/PawClicker/refs/heads/feature/achivements/src/assets/clicker.js)
 
-### Stat control <a name="clickerStat"></a>
+### Stat control
 
 <br>
 
 ~~~javascript
 requestUserStats()
 ~~~
-<a name="requestUserStats"></a>
 
 Requests user stats and data using IPC.
 
@@ -122,13 +121,12 @@ Requests user stats and data using IPC.
 ~~~javascript
 saveStats()
 ~~~
-<a name="saveStats"></a>
 
-Sends a message to main using IPC to save stats, by replacing old stats with the new ones and then calling [saveAll()](#saveAll).
+Sends a message to main using IPC to save stats, by replacing old stats with the new ones and then calling [saveAll()](#saveall).
 
 <br><br>
 
-### Game mechanics <a name="clickerGame"></a>
+### Game mechanics
 
 <br>
 
@@ -136,14 +134,13 @@ Sends a message to main using IPC to save stats, by replacing old stats with the
 executeClick()
 ~~~
 
-Increases user cash by multiplying click stat with power stat, then [saving stats](#saveStats) and [updating display](#updateDisplay).
+Increases user cash by multiplying click stat with power stat, then [saving stats](#savestats) and [updating display](#updatedisplay).
 
 <br><br>
 
 ~~~javascript
 updateDisplay()
 ~~~
-<a name="updateDisplay"></a>
 
 Updates the display of user current data.
 - Gets elements from index.html:
@@ -155,17 +152,17 @@ Updates the display of user current data.
     - cash: *Cash: ${stats.value}$*
     - click: *Click Power: ${stats.click}*
     - power: *Power Multiplier: ${stats.power}*
-- When the contents of HTML are fully loaded, it calls [requestUserStats](#requestUserStats) and [updateDisplay](#updateDisplay)
+- When the contents of HTML are fully loaded, it calls requestUserStats and updateDisplay
 
 <br><br>
 
 ---
 
-## shop.js <a name="shop"></a>
+## shop.js
 
 [View raw file](https://raw.githubusercontent.com/pawfix/PawClicker/refs/heads/feature/achivements/src/assets/shop.js)
 
-### Logging shop <a name="shopUtility"></a>
+### Shop utilities
 
 <br>
 
@@ -188,7 +185,6 @@ Logs shop data.
 ~~~javascript
 getShopPrice(item)
 ~~~
-<a name="getShopPrice"></a>
 
 Returns the price of a specific item.
 
@@ -204,7 +200,7 @@ Returns the price of a specific item.
 
 <br><br>
 
-### Game mechanics <a name="shopGame"></a>
+### Game mechanics
 
 <br>
 
@@ -213,7 +209,7 @@ shopBuy(item)
 ~~~
 
 Lets the user buy an item.
-- Calls [getShopPrice](#getShopPrice) to calculate cost
+- Calls getShopPrice to calculate cost
 - Logs invalid items
 - Sends item and cost to main.js using IPC
 
@@ -229,11 +225,11 @@ Toggles autoclicker by sending a request to main.js using IPC.
 
 ---
 
-## btn.js <a name="btn"></a>
+## btn.js
 
 [View raw file](https://raw.githubusercontent.com/pawfix/PawClicker/refs/heads/feature/achivements/src/main/btn.js)
 
-### Opening windows <a name="btnOpen"></a>
+### Opening windows
 
 <br>
 
@@ -245,7 +241,7 @@ Tells main.js using IPC to open the settings window.
 
 <br><br>
 
-### Managing current windows <a name="btnManage"></a>
+### Managing current windows
 
 <br>
 
