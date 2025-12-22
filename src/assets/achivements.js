@@ -5,3 +5,9 @@ ipcRenderer.on('getUserStats', (event, statParse) => {
     advancements = statParse.advancements || advancements;
     console.log('Advancements received:', advancements);
 });
+
+function updateAdvancementsDisplay() {
+    document.getElementById('test').textContent = JSON.stringify(advancements, null, 2);
+    console.log('Updated display with data: ' advancements);
+
+}

@@ -1,5 +1,5 @@
 // Centralized stats object
-let stats = {
+let data = {
     value: 0,
     click: 1,
     power: 1
@@ -8,9 +8,9 @@ let stats = {
 // Ask main.js to give user stats from the save file
 ipcRenderer.on('getUserStats', (event, statParse) => {
     // Use the stats object only
-    stats = statParse.data || stats;
+    data = statParse.data || data;
     updateDisplay();
-    console.log('Stats received:', stats);
+    console.log('Stats received:', data);
 });
 
 // Request stats from main
@@ -20,13 +20,14 @@ function requestUserStats() {
 
 // Save current stats
 function saveStats() {
-    ipcRenderer.send('updateUserStats', { data: stats }); // always safe
-    console.log('Stats sent to main for saving:', stats);
+    ipcRenderer.send('updateUserStats', { data }); // always safe
+    console.log('Stats sent to main for saving:', data);
 }
 
 // Execute click
 function executeClick() {
-    stats.value += stats.click * stats.power;
+    data.value += data.click * ((data.power / 10) + 1);
+    data.value = Math.round(data.value * 10) / 10;
     saveStats();
     updateDisplay();
 }
@@ -39,9 +40,9 @@ function updateDisplay() {
 
     if (!cashEl || !clickEl || !powerEl) return;
 
-    cashEl.innerText = `Cash: ${stats.value}$`;
-    clickEl.innerText = `Click Power: ${stats.click}`;
-    powerEl.innerText = `Power Multiplier: ${stats.power}`;
+    cashEl.innerText = `Cash: ${data.value}$`;
+    clickEl.innerText = `Click Power: ${data.click}`;
+    powerEl.innerText = `Power Multiplier: ${data.power}`;
 }
 
 // Initial setup

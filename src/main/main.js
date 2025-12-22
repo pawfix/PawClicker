@@ -280,7 +280,7 @@ ipcMain.on('RequestUserStats', event => {
 });
 
 ipcMain.on('updateUserStats', (event, payload) => {
-    if (payload.stats) {
+    if (payload.data) {
         data = { ...data, ...payload.data };
     }
 
@@ -308,28 +308,36 @@ ipcMain.on('shop-buy', (event, { item, cost }) => {
     if (!shop || !data) return;
     if (data.value < cost) return;
 
+    // Subtract cost and round
     data.value -= cost;
+    data.value = Math.round(data.value * 10) / 10;
 
+    // Apply upgrades
     switch (item) {
         case 'click':
             data.click += 1;
             shop.clicks = data.click;
+            shop.clicks = Math.round(shop.clicks * 10) / 10;
             break;
         case 'power':
             data.power += 1;
             shop.power = data.power;
+            shop.power = Math.round(shop.power * 10) / 10;
             break;
         case 'auto':
             shop.auto += 1;
+            shop.auto = Math.round(shop.auto * 10) / 10;
             break;
     }
 
     saveAll();
 
+    // Broadcast rounded values
     BrowserWindow.getAllWindows().forEach(win => {
         win.webContents.send('getUserStats', { data, shop, advancements });
     });
 });
+
 
 /* =========================
    AUTO CLICKER

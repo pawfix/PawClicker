@@ -10,16 +10,27 @@ ipcRenderer.on('getUserStats', (event, statParse) => {
     }
 
     if (statParse && statParse.data) {
-        shop.value = statParse.data.value;
+        shop.value = Math.round(statParse.data.value * 10) / 10;
     }
-
     console.log('Shop data received:', shop);
 });
 
+
 function saveShop() {
-    ipcRenderer.send('updateUserStats', { shop }); // always safe
-    console.log('Shop data sent to main for saving:', shop);
+
+    // Round all relevant shop and data values( Avoids stuff like 2.9999999999999999999993)
+    const roundedShop = {
+        clicks: Math.round(shop.clicks * 10) / 10,
+        power: Math.round(shop.power * 10) / 10,
+        auto: Math.round(shop.auto * 10) / 10,
+        value: Math.round(shop.value * 10) / 10
+    };
+
+    ipcRenderer.send('updateUserStats', { shop: roundedShop });
+
+    console.log('Shop data sent to main for saving (rounded):', roundedShop);
 }
+
 
 function logShop() {
     console.log('Current shop data:', shop);
@@ -38,11 +49,12 @@ document.addEventListener('DOMContentLoaded', () => {
 function getShopPrice(item) {
     switch (item) {
         case 'click': return 10 * shop.clicks;
-        case 'power': return 100 * (shop.power * 1.5);
+        case 'power': return Math.round(100 * (shop.power * 1.5) * 10) / 10;
         case 'auto': return 250 * (shop.auto + 1);
         default: return 0;
     }
 }
+
 
 // Buy Item
 function shopBuy(item) {
