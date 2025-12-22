@@ -1,3 +1,4 @@
+const { log } = require('builder-util');
 const { app, BrowserWindow, ipcMain } = require('electron');
 const fs = require('fs');
 const path = require('path');
@@ -311,7 +312,6 @@ function loadStats() {
     shop.clicks = data.click;
     shop.power = data.power;
 
-    console.log(stats);
 }
 
 function saveAll() {
@@ -343,13 +343,14 @@ loadStats();
 ipcMain.on('manual-click', () => {
     if (!data) return;
 
-    const gain =
-        (data.power === 1)
-            ? data.click
-            : data.click * ((data.power / 10) + 1);
+    const gain = (data.power === 1)
+        ? data.click
+        : data.click * ((data.power / 10) + 1);
 
     addValue(gain);
     stats.clicks += 1;
+
+    checkAdvancements();
 
     saveAll();
 
@@ -357,16 +358,16 @@ ipcMain.on('manual-click', () => {
         win.webContents.send('getUserStats', {
             data,
             shop,
-            advancements,
-            stats
+            stats,
+            advancements
         });
     });
 });
 
 
+
 ipcMain.on('RequestUserStats', event => {
     event.sender.send('getUserStats', { data, shop, advancements, stats });
-    // console.log({ data, shop, advancements })
 });
 
 ipcMain.on('updateUserStats', (event, payload) => {
@@ -401,7 +402,6 @@ ipcMain.on('updateUserStats', (event, payload) => {
         });
     });
 
-    console.log('Stats updated:', { data, shop, stats, advancements });
 });
 
 
@@ -481,3 +481,77 @@ setInterval(() => {
         win.webContents.send('getUserStats', { data, shop });
     });
 }, 1000);
+
+
+/* =========================
+   ACHIVEMENTS HANDLER
+========================= */
+
+// Check stats
+function checkAdvancements() {
+    if (!advancements || !stats) return;
+
+    // True/False advancements
+    if (!advancements.firstClick && stats.clicks > 0) {
+        advancements.firstClick = true;
+        console.log('firstClick unlocked!');
+    }
+
+    if (!advancements.openedSettings && stats.openedSettingsTriggered) {
+        advancements.openedSettings = true;
+        console.log('openedSettings unlocked!');
+    }
+
+    // Clicks milestones
+    for (const milestone of Object.keys(advancements.clicks)) {
+        const num = parseInt(milestone, 10);
+        if (!advancements.clicks[milestone] && stats.clicks >= num) {
+            advancements.clicks[milestone] = true;
+            console.log(`Clicks milestone ${milestone} unlocked!`);
+        }
+    }
+
+    // Cash milestones
+    for (const milestone of Object.keys(advancements.cash)) {
+        const num = parseInt(milestone, 10);
+        if (!advancements.cash[milestone] && stats.cash >= num) {
+            advancements.cash[milestone] = true;
+            console.log(`Cash milestone ${milestone} unlocked!`);
+        }
+    }
+
+    // Auto milestones
+    for (const milestone of Object.keys(advancements.auto)) {
+        const num = parseInt(milestone, 10);
+        if (!advancements.auto[milestone] && stats.autoClick >= num) {
+            advancements.auto[milestone] = true;
+            console.log(`Auto milestone ${milestone} unlocked!`);
+        }
+    }
+
+    saveAll();
+
+    // Broadcast updated stats and advancements to all windows
+    BrowserWindow.getAllWindows().forEach(win => {
+        win.webContents.send('getUserStats', {
+            data,
+            shop,
+            stats,
+            advancements
+        });
+    });
+}
+
+
+
+
+
+
+console.log(stats);
+console.log(advancements)
+
+checkAdvancements('firstClick');
+checkAdvancements('openedSettings');
+checkAdvancements('clicks', '1000');
+checkAdvancements('cash', '5000');
+checkAdvancements('auto', '25');         
