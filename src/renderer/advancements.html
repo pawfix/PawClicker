@@ -11,16 +11,12 @@
         <script src="../assets/shop.js" defer></script>
         <script src="../assets/achivements.js" defer></script>
         <link rel="stylesheet" href="styles/style.css">
-        <style>
-            * {
-                color: black;
-            }
-        </style>
+        <link rel="stylesheet" href="styles/advancements/style.css">
     </head>
     <body>
         <header>
-            <button onclick="closeCurrentWindow()" title="Close window">&#x26CC;</button>
-            <button onclick="minimizeWindow()" title="Minimize Window">&#x268A;</button>
+            <button onclick="closeCurrentWindow()" title="Close window" tabindex="-1">&#x26CC;</button>
+            <button onclick="minimizeWindow()" title="Minimize Window" tabindex="-1">&#x268A;</button>
         </header>
         <div id="advancementsContainer"></div>
     </body>

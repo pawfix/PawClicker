@@ -1,0 +1,57 @@
+div#advancementsContainer {
+  text-align: center;
+  border: 5px solid gray;
+  height: 100vh;
+  background-color: var(--background-color);
+  overflow: auto;
+  padding: 5vh 5vw;
+  overflow-y: auto;
+  scroll-behavior: smooth;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+div#advancementsContainer::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+  background: transparent;
+}
+div#advancementsContainer::-webkit-scrollbar-track {
+  background: transparent;
+}
+div#advancementsContainer::-webkit-scrollbar-thumb {
+  background: transparent;
+}
+div#advancementsContainer h2 {
+  font-size: 10vh;
+}
+div#advancementsContainer div {
+  height: 10vh;
+  text-align: center;
+  padding-left: 10px;
+  border-radius: 15px;
+  border: 1px solid black;
+  background-color: var(--header-button);
+  width: 80vw;
+  margin: 10px auto;
+  -webkit-border-radius: 15px;
+  -moz-border-radius: 15px;
+  -ms-border-radius: 15px;
+  -o-border-radius: 15px;
+  font-size: 7.5vh;
+}
+div#advancementsContainer div:hover, div#advancementsContainer div:focus {
+  border: 5px solid red;
+  cursor: pointer;
+  transform: scale(1.05);
+  -webkit-transform: scale(1.05);
+  -moz-transform: scale(1.05);
+  -ms-transform: scale(1.05);
+  -o-transform: scale(1.05);
+}
+div#advancementsContainer .complited {
+  border: 5px solid #4caf50;
+  color: #2e7d32;
+}
+div#advancementsContainer .complited strong {
+  color: #2e7d32;
+}/*# sourceMappingURL=style.css.map */

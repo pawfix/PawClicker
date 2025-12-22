@@ -34,7 +34,7 @@ ipcRenderer.on('getUserStats', (event, statParse) => {
     simpleAdv.forEach(key => {
         const unlockedClass = advancements[key] ? 'complited' : '';
         advContainer.innerHTML += `
-            <div class="${unlockedClass}">
+            <div class="${unlockedClass}"  tabindex="1">
                 <strong>${key}</strong>
             </div>
         `;
@@ -43,7 +43,7 @@ ipcRenderer.on('getUserStats', (event, statParse) => {
     // Categorized milestones
     const categories = ['clicks', 'cash', 'auto'];
     categories.forEach(cat => {
-        advContainer.innerHTML += `<h4>${cat.toUpperCase()}</h4>`;
+        advContainer.innerHTML += `<h2>${cat.toUpperCase()}</h2>`;
 
         // Use current keys dynamically
         for (const milestone in advancements[cat]) {
@@ -63,7 +63,7 @@ ipcRenderer.on('getUserStats', (event, statParse) => {
             }
 
             advContainer.innerHTML += `
-                <div class="${unlockedClass}">
+                <div class="${unlockedClass}"  tabindex="1">
                     ${milestone} (${currentValue}/${milestone})
                 </div>
             `;
