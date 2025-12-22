@@ -20,9 +20,9 @@
       "50000": false
     },
     "auto": {
-      "1": false,
-      "5": false,
-      "25": false
+      "25": false,
+      "100": false,
+      "500": false
     }
   },
   "shop": {

@@ -166,7 +166,7 @@ ipcMain.on('open-stats-window', () => {
         statsWindow.focus();
         return;
     }
-    createAdvanementsWindow();
+    createStatsWindow();
 });
 
 ipcMain.on('window-minimize', e => {
@@ -219,9 +219,9 @@ const DEFAULT_ADVANCEMENTS = {
         50000: false
     },
     auto: {
-        1: false,
-        5: false,
-        25: false
+        25: false,
+        100: false,
+        500: false
     }
 }
 
@@ -496,19 +496,23 @@ setInterval(() => {
     if (!autoClickerToggle || !shop || !data) return;
     if (shop.auto <= 0) return;
 
-    stats.autoClick += 1;
+    stats.autoClick += 1;                     // Increment auto clicks
+    addValue(shop.auto * data.power);        // Add auto click value
 
-    addValue(shop.auto * data.power);
+    checkAdvancements();                     // Check advancements based on updated stats
+
     saveAll();
 
     BrowserWindow.getAllWindows().forEach(win => {
-        win.webContents.send('getStatProgress', stats);
-    });
-
-    BrowserWindow.getAllWindows().forEach(win => {
-        win.webContents.send('getUserStats', { data, shop });
+        win.webContents.send('getUserStats', {
+            data,
+            shop,
+            stats,
+            advancements
+        });
     });
 }, 1000);
+
 
 
 /* =========================
@@ -519,7 +523,7 @@ setInterval(() => {
 function checkAdvancements() {
     if (!advancements || !stats) return;
 
-    // True/False advancements
+    // Simple True/False advancements
     if (!advancements.firstClick && stats.clicks > 0) {
         advancements.firstClick = true;
         console.log('firstClick unlocked!');
@@ -530,32 +534,31 @@ function checkAdvancements() {
         console.log('openedSettings unlocked!');
     }
 
-    // Clicks milestones
-    for (const milestone of Object.keys(advancements.clicks)) {
-        const num = parseInt(milestone, 10);
-        if (!advancements.clicks[milestone] && stats.clicks >= num) {
-            advancements.clicks[milestone] = true;
-            console.log(`Clicks milestone ${milestone} unlocked!`);
-        }
-    }
+    // Loop over all categories dynamically
+    const categories = ['clicks', 'cash', 'auto'];
+    categories.forEach(cat => {
+        for (const milestone in advancements[cat]) {
+            const milestoneValue = parseInt(milestone, 10);
+            let statValue = 0;
 
-    // Cash milestones
-    for (const milestone of Object.keys(advancements.cash)) {
-        const num = parseInt(milestone, 10);
-        if (!advancements.cash[milestone] && stats.cash >= num) {
-            advancements.cash[milestone] = true;
-            console.log(`Cash milestone ${milestone} unlocked!`);
-        }
-    }
+            switch (cat) {
+                case 'clicks':
+                    statValue = stats.clicks;
+                    break;
+                case 'cash':
+                    statValue = stats.cash;
+                    break;
+                case 'auto':
+                    statValue = stats.autoClick;
+                    break;
+            }
 
-    // Auto milestones
-    for (const milestone of Object.keys(advancements.auto)) {
-        const num = parseInt(milestone, 10);
-        if (!advancements.auto[milestone] && stats.autoClick >= num) {
-            advancements.auto[milestone] = true;
-            console.log(`Auto milestone ${milestone} unlocked!`);
+            if (!advancements[cat][milestone] && statValue >= milestoneValue) {
+                advancements[cat][milestone] = true;
+                console.log(`${cat} milestone ${milestoneValue} unlocked!`);
+            }
         }
-    }
+    });
 
     saveAll();
 
@@ -571,15 +574,3 @@ function checkAdvancements() {
 }
 
 
-
-
-
-
-console.log(stats);
-console.log(advancements)
-
-checkAdvancements('firstClick');
-checkAdvancements('openedSettings');
-checkAdvancements('clicks', '1000');
-checkAdvancements('cash', '5000');
-checkAdvancements('auto', '25');         

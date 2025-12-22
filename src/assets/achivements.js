@@ -24,6 +24,7 @@ ipcRenderer.on('getUserStats', (event, statParse) => {
     const advContainer = document.getElementById('advancementsContainer');
     if (!advContainer) return;
 
+    // Clear previous content
     advContainer.innerHTML = '';
 
     const { advancements, stats } = statParse;
@@ -31,12 +32,10 @@ ipcRenderer.on('getUserStats', (event, statParse) => {
     // Simple True/False advancements
     const simpleAdv = ['firstClick', 'openedSettings'];
     simpleAdv.forEach(key => {
-        const isCompleted = advancements[key];
-        const unlocked = isCompleted ? '&#x2713;' : '&#x2717;';
-        const className = isCompleted ? 'complited' : '';
+        const unlockedClass = advancements[key] ? 'complited' : '';
         advContainer.innerHTML += `
-            <div class="${className}">
-                <strong>${key}</strong>: ${unlocked}
+            <div class="${unlockedClass}">
+                <strong>${key}</strong>
             </div>
         `;
     });
@@ -45,12 +44,12 @@ ipcRenderer.on('getUserStats', (event, statParse) => {
     const categories = ['clicks', 'cash', 'auto'];
     categories.forEach(cat => {
         advContainer.innerHTML += `<h4>${cat.toUpperCase()}</h4>`;
-        for (const milestone in advancements[cat]) {
-            const isCompleted = advancements[cat][milestone];
-            const unlocked = isCompleted ? '&#x2713;' : '&#x2717;';
-            const className = isCompleted ? 'complited' : '';
 
+        // Use current keys dynamically
+        for (const milestone in advancements[cat]) {
+            const unlockedClass = advancements[cat][milestone] ? 'complited' : '';
             let currentValue = 0;
+
             switch (cat) {
                 case 'clicks':
                     currentValue = stats.clicks;
@@ -64,13 +63,14 @@ ipcRenderer.on('getUserStats', (event, statParse) => {
             }
 
             advContainer.innerHTML += `
-                <div class="${className}">
-                    ${milestone} (${currentValue}/${milestone}): ${unlocked}
+                <div class="${unlockedClass}">
+                    ${milestone} (${currentValue}/${milestone})
                 </div>
             `;
         }
     });
 });
+
 
 
 
