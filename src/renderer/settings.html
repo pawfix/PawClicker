@@ -19,34 +19,44 @@
             function resetDataCheck() {
                 if (window.confirm('Are you sure?\nThis Will reset your balance, upgrades and achivements')) {
                     resetData();
+                    closeCurrentWindow();
                 }
             }
 
 
-            function resetData() {
-                // Reset Balance
-                data.value = 0;
-                data.click = 1;
-                data.power = 1;
+        function resetData() {
+            // Reset Balance
+            data.value = 0;
+            data.click = 1;
+            data.power = 1;
 
-                // Reset Stat Progress
-                statProgress.cash = 0;
-                statProgress.clicks = 0;
-                statProgress.autoClick = 0;
+            // Reset Stat Progress
+            statProgress.cash = 0;
+            statProgress.clicks = 0;
+            statProgress.autoClick = 0;
 
-                // Reset shop
-                shop.clicks = 1;
-                shop.powers = 1;
-                shop.auto = 0;
-                shop.value = 0;
+            // Reset shop
+            shop.clicks = 1;
+            shop.powers = 1;
+            shop.auto = 0;
+            shop.value = 0;
 
-                // Save and update related data
-                saveShop();
-                saveStats();
-                saveStatProgress();
-                updateDisplay();
-                closeCurrentWindow();
-            }
+            // Reset advancements
+            advancements.firstClick = false;
+            advancements.openedSettings = false;
+            advancements.clicks = { '100': false, '1000': false, '5000': false, '50000': false };
+            advancements.cash = { '100': false, '1000': false, '5000': false, '50000': false };
+            advancements.auto = { '1': false, '5': false, '25': false };
+
+            // Save and update related data
+            ipcRenderer.send('resetStatProgress')
+            saveShop();
+            saveStats();
+            saveStatProgress();
+            ipcRenderer.send('updateUserStats', { advancements });
+            closeCurrentWindow();
+            updateDisplay();
+        }
         </script>
     </body>
 </html>

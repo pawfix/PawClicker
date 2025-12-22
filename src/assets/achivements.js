@@ -18,12 +18,63 @@ ipcRenderer.on('getStatProgress', (event, stats) => {
     console.log(stats); // stats is now { cash, clicks, autoClick }
 });
 
+ipcRenderer.on('getUserStats', (event, statParse) => {
+    if (!statParse.advancements) return;
 
-function updateAdvancementsDisplay() {
-    document.getElementById('test').textContent = JSON.stringify(advancements, null, 2);
-    console.log('Updated display with data: ' + advancements);
+    const advContainer = document.getElementById('advancementsContainer');
+    if (!advContainer) return;
 
-}
+    advContainer.innerHTML = '';
+
+    const { advancements, stats } = statParse;
+
+    // Simple True/False advancements
+    const simpleAdv = ['firstClick', 'openedSettings'];
+    simpleAdv.forEach(key => {
+        const isCompleted = advancements[key];
+        const unlocked = isCompleted ? '&#x2713;' : '&#x2717;';
+        const className = isCompleted ? 'complited' : '';
+        advContainer.innerHTML += `
+            <div class="${className}">
+                <strong>${key}</strong>: ${unlocked}
+            </div>
+        `;
+    });
+
+    // Categorized milestones
+    const categories = ['clicks', 'cash', 'auto'];
+    categories.forEach(cat => {
+        advContainer.innerHTML += `<h4>${cat.toUpperCase()}</h4>`;
+        for (const milestone in advancements[cat]) {
+            const isCompleted = advancements[cat][milestone];
+            const unlocked = isCompleted ? '&#x2713;' : '&#x2717;';
+            const className = isCompleted ? 'complited' : '';
+
+            let currentValue = 0;
+            switch (cat) {
+                case 'clicks':
+                    currentValue = stats.clicks;
+                    break;
+                case 'cash':
+                    currentValue = stats.cash;
+                    break;
+                case 'auto':
+                    currentValue = stats.autoClick;
+                    break;
+            }
+
+            advContainer.innerHTML += `
+                <div class="${className}">
+                    ${milestone} (${currentValue}/${milestone}): ${unlocked}
+                </div>
+            `;
+        }
+    });
+});
+
+
+
+
 
 function LogStatProgress() {
     console.log(statProgress);

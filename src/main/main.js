@@ -128,10 +128,30 @@ app.whenReady().then(createWindow);
 ipcMain.on('open-second-window', () => {
     if (settingsWindow && !settingsWindow.isDestroyed()) {
         settingsWindow.focus();
-        return;
+    } else {
+        createSettingsWindow();
     }
-    createSettingsWindow();
+
+    // Mark "openedSettings" advancement
+    if (advancements && !advancements.openedSettings) {
+        advancements.openedSettings = true;
+        console.log('openedSettings advancement unlocked!');
+
+        // Save updated advancements
+        saveAll();
+
+        // Broadcast updated stats/advancements to all windows
+        BrowserWindow.getAllWindows().forEach(win => {
+            win.webContents.send('getUserStats', {
+                data,
+                shop,
+                stats,
+                advancements
+            });
+        });
+    }
 });
+
 
 ipcMain.on('open-advancements-window', () => {
     if (advancementsWindow && !advancementsWindow.isDestroyed()) {
@@ -404,9 +424,17 @@ ipcMain.on('updateUserStats', (event, payload) => {
 
 });
 
+ipcMain.on('resetStatProgress', event => {
+    stats = { ...DEFAULT_STATS }; // make a copy to avoid reference issues
+    saveAll();
 
+    console.log('reseted data');
 
-
+    // Send updated stats to all windows
+    BrowserWindow.getAllWindows().forEach(win => {
+        win.webContents.send('getStatProgress', stats);
+    });
+});
 
 
 /* =========================

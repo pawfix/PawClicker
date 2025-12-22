@@ -10,8 +10,18 @@
         <script src="ui.js" defer></script>
         <script src="../assets/shop.js" defer></script>
         <script src="../assets/achivements.js" defer></script>
+        <link rel="stylesheet" href="styles/style.css">
+        <style>
+            * {
+                color: black;
+            }
+        </style>
     </head>
     <body>
-        <div id="test">1</div>
+        <header>
+            <button onclick="closeCurrentWindow()" title="Close window">&#x26CC;</button>
+            <button onclick="minimizeWindow()" title="Minimize Window">&#x268A;</button>
+        </header>
+        <div id="advancementsContainer"></div>
     </body>
 </html>
