@@ -1,0 +1,54 @@
+* {
+  margin: 0;
+}
+
+div#statsContainer {
+  font-size: 32px;
+  text-align: center;
+  border: 2px solid black;
+  margin: 5%;
+  border-radius: 25px;
+  -webkit-border-radius: 25px;
+  -moz-border-radius: 25px;
+  -ms-border-radius: 25px;
+  -o-border-radius: 25px;
+}
+div#statsContainer table {
+  width: 100%;
+  height: auto;
+}
+div#statsContainer table thead {
+  height: 15vh;
+  font-size: larger;
+  background-color: var(--primary-color);
+}
+div#statsContainer table thead tr th:first-child {
+  border-top-left-radius: 25px;
+}
+div#statsContainer table thead tr th:last-child {
+  border-top-right-radius: 25px;
+}
+div#statsContainer table tbody {
+  background-color: var(--secondary-color);
+}
+div#statsContainer table tbody tr {
+  height: 10vh;
+}
+div#statsContainer table tbody tr:last-child td:first-child {
+  border-bottom-left-radius: 25px;
+}
+div#statsContainer table tbody tr:last-child td:last-child {
+  border-bottom-right-radius: 25px;
+}
+div#statsContainer table tbody tr td {
+  width: 50%;
+}
+div#statsContainer table tbody tr:hover {
+  font-size: 1.2em;
+  transition: font-size 0.3s ease-out;
+  background-color: var(--header-button);
+  -webkit-transition: font-size 0.3s ease-out;
+  -moz-transition: font-size 0.3s ease-out;
+  -ms-transition: font-size 0.3s ease-out;
+  -o-transition: font-size 0.3s ease-out;
+}/*# sourceMappingURL=style.css.map */

@@ -33,7 +33,10 @@
   }
 }
 body {
-  background-color: var(--clicker-bg);
+  animation: clickerSlide 60s linear infinite;
+  -webkit-animation: clickerSlide 60s linear infinite;
+  background: var(--clicker-bg);
+  background-size: 200% 200%, 100% 100%, 100% 100%, 100% 100%;
 }
 
 header {
