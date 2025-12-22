@@ -20,21 +20,21 @@ function requestUserStats() {
 
 // Save current stats
 function saveStats() {
-    ipcRenderer.send('updateUserStats', { data }); // always safe
+    ipcRenderer.send('updateUserStats', {
+        data: {
+            value: data.click * ((data.power / 10) + 1)
+        },
+        statGain: {
+            clicks: 1
+        }
+    });
     console.log('Stats sent to main for saving:', data);
 }
 
 // Execute click
 function executeClick() {
     // If u have 1 power, it wont be multiplied by it. Otherwise you get for 1.1 at start
-    if (data.power === 1) {
-        data.value += data.click;
-    } else {
-        data.value += data.click * ((data.power / 10) + 1);
-    }
-    data.value = Math.round(data.value * 10) / 10;
-    saveStats();
-    updateDisplay();
+    ipcRenderer.send('manual-click');
 }
 
 // Update DOM display

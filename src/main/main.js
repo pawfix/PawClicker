@@ -322,11 +322,47 @@ function saveAll() {
     );
 }
 
+// Cash handler
+function addValue(amount) {
+    if (amount <= 0) return;
+
+    data.value += amount;
+    stats.cash += amount;
+
+    data.value = Math.round(data.value * 10) / 10;
+    stats.cash = Math.round(stats.cash * 10) / 10;
+}
+
+
 loadStats();
 
 /* =========================
    IPC
 ========================= */
+
+ipcMain.on('manual-click', () => {
+    if (!data) return;
+
+    const gain =
+        (data.power === 1)
+            ? data.click
+            : data.click * ((data.power / 10) + 1);
+
+    addValue(gain);
+    stats.clicks += 1;
+
+    saveAll();
+
+    BrowserWindow.getAllWindows().forEach(win => {
+        win.webContents.send('getUserStats', {
+            data,
+            shop,
+            advancements,
+            stats
+        });
+    });
+});
+
 
 ipcMain.on('RequestUserStats', event => {
     event.sender.send('getUserStats', { data, shop, advancements, stats });
@@ -345,18 +381,32 @@ ipcMain.on('updateUserStats', (event, payload) => {
     }
 
     if (payload.stats) {
-        stats = { ...stats, ...payload.stats };
+        stats.cash += payload.stats.cash || 0;
+        stats.clicks += payload.stats.clicks || 0;
+        stats.autoClick += payload.stats.autoClick || 0;
     }
 
-    shop.clicks = data.click;
-    shop.power = data.power;
+    if (payload.advancements) {
+        advancements = { ...advancements, ...payload.advancements };
+    }
 
     saveAll();
 
     BrowserWindow.getAllWindows().forEach(win => {
-        win.webContents.send('getUserStats', { data, shop, advancements, stats });
+        win.webContents.send('getUserStats', {
+            data,
+            shop,
+            stats,
+            advancements
+        });
     });
+
+    console.log('Stats updated:', { data, shop, stats, advancements });
 });
+
+
+
+
 
 
 /* =========================
@@ -393,7 +443,13 @@ ipcMain.on('shop-buy', (event, { item, cost }) => {
 
     // Broadcast rounded values
     BrowserWindow.getAllWindows().forEach(win => {
-        win.webContents.send('getUserStats', { data, shop, advancements });
+        win.webContents.send('getUserStats', {
+            data,
+            shop,
+            advancements,
+            stats
+        });
+
     });
 });
 
@@ -414,7 +470,7 @@ setInterval(() => {
 
     stats.autoClick += 1;
 
-    data.value += shop.auto * data.power;
+    addValue(shop.auto * data.power);
     saveAll();
 
     BrowserWindow.getAllWindows().forEach(win => {
