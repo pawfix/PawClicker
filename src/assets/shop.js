@@ -49,8 +49,8 @@ document.addEventListener('DOMContentLoaded', () => {
 function getShopPrice(item) {
     switch (item) {
         case 'click': return 10 * shop.clicks;
-        case 'power': return Math.round(100 * (shop.power * 1.5) * 10) / 10;
-        case 'auto': return 250 * (shop.auto + 1);
+        case 'power': return Math.round(250 * shop.power * 10) / 10;
+        case 'auto': return 1500 * (shop.auto + 1);
         default: return 0;
     }
 }
