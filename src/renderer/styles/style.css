@@ -243,4 +243,34 @@ main div.store div.shopItems button:hover {
   cursor: pointer;
   filter: brightness(0.8);
   -webkit-filter: brightness(0.8);
-}/*# sourceMappingURL=style.css.map */
+}
+
+
+div#advancementsContainer{
+  text-align: center;
+    border: 5px solid gray;
+  height: 100vh;
+  background-color: var(--background-color);
+  overflow: auto;
+  padding:5vh 5vw;
+}
+div#advancementsContainer h4{
+  font-size: 150%;
+  margin-top: 2vh;
+}
+div#advancementsContainer div {
+  text-align: center;
+  padding-left: 10px;
+  border-radius: 15px;
+  border: 1px solid black;
+  background-color: var(--header-button);
+    width: auto;
+  margin: 10px;
+}
+div#advancementsContainer .complited {
+    border: 5px solid #4caf50; /* Green highlight */
+    color: #2e7d32;
+}
+
+
+/*# sourceMappingURL=style.css.map */
