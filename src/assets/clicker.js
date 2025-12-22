@@ -26,7 +26,12 @@ function saveStats() {
 
 // Execute click
 function executeClick() {
-    data.value += data.click * ((data.power / 10) + 1);
+    // If u have 1 power, it wont be multiplied by it. Otherwise you get for 1.1 at start
+    if (data.power === 1) {
+        data.value += data.click;
+    } else {
+        data.value += data.click * ((data.power / 10) + 1);
+    }
     data.value = Math.round(data.value * 10) / 10;
     saveStats();
     updateDisplay();

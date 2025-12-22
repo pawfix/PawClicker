@@ -9,6 +9,7 @@
     - [Stat control](#stat-control)
     - [Display](#display)
     - [Game mechanics](#game-mechanics)
+    - [Debug](#debug)
 - [shop.js](#shopjs)
     - [Shop utilities](#shop-utilities)
     - [Display](#display-1)
@@ -16,7 +17,10 @@
 - [btn.js](#btnjs)
     - [Opening windows](#opening-windows)
     - [Managing current windows](#managing-current-windows)
-
+- [achivements.js](#achivementsjs)
+    - [Display](#display-2)
+    - [Game mechanics](#game-mechanics-2)
+    - [Debug](#debug-1)
 ---
 
 ## Main.js
@@ -63,6 +67,48 @@ Window options:
     - contextIsolation: false
 - Locked aspect ratio at 600/300 (2/1)
 - Uses settings.html
+
+<br><br>
+
+~~~javascript
+createStatsWindow()
+~~~
+
+Runs when IPC receives a call from main window, telling it to open it. <br><br>
+Window options:
+- width: 900 (also minimum width)
+- height: 450 (also minimum height)
+- resizable: true
+- frame: false
+- title: Settings
+- modal: false
+- webPreferences:
+    - preload: preload.js
+    - nodeIntegration: true
+    - contextIsolation: false
+- Locked aspect ratio at 900/450 (2/1)
+- Uses stats.html
+
+<br><br>
+
+~~~javascript
+createAdvanementsWindow()
+~~~
+
+Runs when IPC receives a call from main window, telling it to open it. <br><br>
+Window options:
+- width: 900 (also minimum width)
+- height: 450 (also minimum height)
+- resizable: true
+- frame: false
+- title: Settings
+- modal: false
+- webPreferences:
+    - preload: preload.js
+    - nodeIntegration: true
+    - contextIsolation: false
+- Locked aspect ratio at 900/450 (2/1)
+- Uses achivements.html
 
 <br><br>
 
@@ -156,6 +202,18 @@ Updates the display of user current data.
 
 <br><br>
 
+### Debug
+
+<br>
+
+~~~javascript
+RequestSaveDir()
+~~~
+
+Tells main.js to log the save dir, which is stats.json
+
+<br><br>
+
 ---
 
 ## shop.js
@@ -241,6 +299,14 @@ Tells main.js using IPC to open the settings window.
 
 <br><br>
 
+~~~javascript
+openStatsWindow()
+~~~
+
+Tells main.js using IPC to open the stats window.
+
+<br><br>
+
 ### Managing current windows
 
 <br>
@@ -268,3 +334,45 @@ maximizeWindow()
 Maximizes the window that called this function.
 
 <br><br>
+
+---
+
+## achivements.js
+
+[View raw file](https://raw.githubusercontent.com/pawfix/PawClicker/refs/heads/feature/achivements/src/assets/achivements.js)
+
+### Display
+
+<br>
+
+~~~javascript
+updateAdvancementsDisplay()
+~~~
+
+Updates the dynamic UI for achivements. for now it just Stringifyies it and replaces the innerHTML.
+
+<br>
+<br>
+
+### Game mechanics
+
+<br>
+
+~~~javascript
+saveStatProgress()
+~~~
+
+Saves users progress with his achivements, by sending the data to main.js
+
+<br>
+<br>
+
+### Debug
+
+<br>
+
+~~~javascript
+LogStatProgress()
+~~~
+
+Logs the 'statProgress' data

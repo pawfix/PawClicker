@@ -22,7 +22,7 @@
         </header>
         <main>
             <div class="clicker">
-                <img src="../assets/UI/click.svg" onclick="executeClick()" class="clickBlock" alt="click">
+                <img src="../assets/UI/click.svg" onclick="executeClick(); logClick()" class="clickBlock" alt="click">
             </div>
             <button onclick="right_panel()" id="rightPanel" class="rightPanelBtn">Open Menu</button>
             <div class="rightPanel">
@@ -41,16 +41,26 @@
         </main>
         <script>
             function resetData() {
+                // Reset Balance
                 data.value = 0;
                 data.click = 1;
                 data.power = 1;
 
-                shop.clicks = 0;
-                shop.powers = 0;
+                // Reset Stat Progress
+                statProgress.cash = 0;
+                statProgress.clicks = 0;
+                statProgress.autoClick = 0;
+
+                // Reset shop
+                shop.clicks = 1;
+                shop.powers = 1;
                 shop.auto = 0;
                 shop.value = 0;
+
+                // Save and update related data
                 saveShop();
                 saveStats();
+                saveStatProgress();
                 updateDisplay();
             }
         </script>

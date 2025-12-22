@@ -8,6 +8,12 @@ function openAdvancementsWindow() {
 
 }
 
+function openStatsWindow() {
+    window.ipcRenderer.send('open-stats-window')
+    console.log('requested window');
+
+}
+
 function closeCurrentWindow() {
     window.close()
 }
@@ -20,6 +26,7 @@ function maximizeWindow() {
     window.ipcRenderer.send('window-maximize')
 }
 
+window.openStatsWindow = openStatsWindow
 window.openAdvancementsWindow = openAdvancementsWindow
 window.openSecondWindow = openSecondWindow
 window.closeCurrentWindow = closeCurrentWindow

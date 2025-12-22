@@ -17,7 +17,7 @@
         </div>
         <script>
             function resetDataCheck() {
-                if (window.confirm('Are you sure?')) {
+                if (window.confirm('Are you sure?\nThis Will reset your balance, upgrades and achivements')) {
                     resetData();
                 }
             }
@@ -28,12 +28,17 @@
                 data.click = 1;
                 data.power = 1;
 
+                stats.cash = 0;
+                stats.clicks = 0;
+                stats.autoClick = 0;
+
                 shop.clicks = 1;
                 shop.powers = 1;
                 shop.auto = 0;
                 shop.value = 0;
                 saveShop();
                 saveStats();
+                saveStatProgress();
                 updateDisplay();
                 closeCurrentWindow();
             }

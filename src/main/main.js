@@ -5,6 +5,7 @@ const path = require('path');
 let mainWindow;
 let settingsWindow;
 let advancementsWindow;
+let statsWindow;
 
 // TEST
 console.log('main.js directory:', __dirname);
@@ -60,8 +61,8 @@ function createSettingsWindow() {
 }
 
 function createAdvanementsWindow() {
-    const width = 600;
-    const height = 300;
+    const width = 900;
+    const height = 450;
 
     advancementsWindow = new BrowserWindow({
         width,
@@ -90,6 +91,37 @@ function createAdvanementsWindow() {
     });
 }
 
+function createStatsWindow() {
+    const width = 900;
+    const height = 450;
+
+    statsWindow = new BrowserWindow({
+        width,
+        height,
+        minWidth: width,
+        minHeight: height,
+        resizable: true,
+        frame: false,
+        title: 'Stats',
+        parent: mainWindow,
+        modal: false,
+        webPreferences: {
+            preload: path.join(__dirname, 'preload.js'),
+            nodeIntegration: true,
+            contextIsolation: false
+        }
+    });
+
+    statsWindow.setAspectRatio(width / height);
+
+    statsWindow.loadFile(path.join(__dirname, '../renderer/stats.html'));
+
+    statsWindow.on('closed', () => {
+        statsWindow = null;
+        mainWindow.focus();
+    });
+}
+
 app.whenReady().then(createWindow);
 
 ipcMain.on('open-second-window', () => {
@@ -103,6 +135,14 @@ ipcMain.on('open-second-window', () => {
 ipcMain.on('open-advancements-window', () => {
     if (advancementsWindow && !advancementsWindow.isDestroyed()) {
         advancementsWindow.focus();
+        return;
+    }
+    createAdvanementsWindow();
+});
+
+ipcMain.on('open-stats-window', () => {
+    if (statsWindow && !statsWindow.isDestroyed()) {
+        statsWindow.focus();
         return;
     }
     createAdvanementsWindow();
@@ -164,6 +204,12 @@ const DEFAULT_ADVANCEMENTS = {
     }
 }
 
+const DEFAULT_STATS = {
+    cash: 0,
+    clicks: 0,
+    autoClick: 0
+}
+
 /* =========================
    STATS FILE RESOLUTION
 ========================= */
@@ -193,7 +239,8 @@ if (!fs.existsSync(userStatsFile)) {
             {
                 data: DEFAULT_DATA,
                 shop: DEFAULT_SHOP,
-                advancements: DEFAULT_ADVANCEMENTS
+                advancements: DEFAULT_ADVANCEMENTS,
+                stats: DEFAULT_STATS
             },
             null,
             2
@@ -223,7 +270,8 @@ ipcMain.on('requestSaveDir', (event) => {
 
 let data = null;
 let shop = null;
-let advancements = null
+let advancements = null;
+let stats = null;
 
 function loadStats() {
     const userData = JSON.parse(fs.readFileSync(statsFile, 'utf8'));
@@ -255,15 +303,21 @@ function loadStats() {
         }
     };
 
+    stats = {
+        ...DEFAULT_STATS,
+        ...(userData.stats || {})
+    }
 
     shop.clicks = data.click;
     shop.power = data.power;
+
+    console.log(stats);
 }
 
 function saveAll() {
     fs.writeFileSync(
         statsFile,
-        JSON.stringify({ data, shop, advancements }, null, 2),
+        JSON.stringify({ data, shop, advancements, stats }, null, 2),
         'utf8'
     );
 }
@@ -275,8 +329,8 @@ loadStats();
 ========================= */
 
 ipcMain.on('RequestUserStats', event => {
-    event.sender.send('getUserStats', { data, shop, advancements });
-    console.log({ data, shop, advancements })
+    event.sender.send('getUserStats', { data, shop, advancements, stats });
+    // console.log({ data, shop, advancements })
 });
 
 ipcMain.on('updateUserStats', (event, payload) => {
@@ -290,15 +344,20 @@ ipcMain.on('updateUserStats', (event, payload) => {
         if (typeof shop.power !== 'undefined') data.power = shop.power;
     }
 
+    if (payload.stats) {
+        stats = { ...stats, ...payload.stats };
+    }
+
     shop.clicks = data.click;
     shop.power = data.power;
 
     saveAll();
 
     BrowserWindow.getAllWindows().forEach(win => {
-        win.webContents.send('getUserStats', { data, shop, advancements });
+        win.webContents.send('getUserStats', { data, shop, advancements, stats });
     });
 });
+
 
 /* =========================
    SHOP LOGIC
@@ -353,8 +412,14 @@ setInterval(() => {
     if (!autoClickerToggle || !shop || !data) return;
     if (shop.auto <= 0) return;
 
+    stats.autoClick += 1;
+
     data.value += shop.auto * data.power;
     saveAll();
+
+    BrowserWindow.getAllWindows().forEach(win => {
+        win.webContents.send('getStatProgress', stats);
+    });
 
     BrowserWindow.getAllWindows().forEach(win => {
         win.webContents.send('getUserStats', { data, shop });

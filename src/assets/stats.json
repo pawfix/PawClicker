@@ -29,5 +29,10 @@
     "clicks": 0,
     "power": 0,
     "auto": 0
+  },
+  "stats": {
+    "cash": 0,
+    "clicks": 0,
+    "autoClick": 0
   }
 }
