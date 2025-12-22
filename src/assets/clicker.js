@@ -1,5 +1,3 @@
-const { ipcRenderer } = require('electron');
-
 // Centralized stats object
 let stats = {
     value: 0,
@@ -10,7 +8,7 @@ let stats = {
 // Ask main.js to give user stats from the save file
 ipcRenderer.on('getUserStats', (event, statParse) => {
     // Use the stats object only
-    stats = statParse.stats || stats;
+    stats = statParse.data || stats;
     updateDisplay();
     console.log('Stats received:', stats);
 });
@@ -22,7 +20,7 @@ function requestUserStats() {
 
 // Save current stats
 function saveStats() {
-    ipcRenderer.send('updateUserStats', { stats }); // always safe
+    ipcRenderer.send('updateUserStats', { data: stats }); // always safe
     console.log('Stats sent to main for saving:', stats);
 }
 

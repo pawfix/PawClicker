@@ -129,7 +129,7 @@ app.on('activate', () => {
    DEFAULT STATE
 ========================= */
 
-const DEFAULT_STATS = {
+const DEFAULT_DATA = {
     value: 0,
     click: 1,
     power: 1
@@ -191,7 +191,7 @@ if (!fs.existsSync(userStatsFile)) {
         userStatsFile,
         JSON.stringify(
             {
-                stats: DEFAULT_STATS,
+                data: DEFAULT_DATA,
                 shop: DEFAULT_SHOP,
                 advancements: DEFAULT_ADVANCEMENTS
             },
@@ -221,49 +221,49 @@ ipcMain.on('requestSaveDir', (event) => {
    STATE
 ========================= */
 
-let stats = null;
+let data = null;
 let shop = null;
 let advancements = null
 
 function loadStats() {
-    const data = JSON.parse(fs.readFileSync(statsFile, 'utf8'));
+    const userData = JSON.parse(fs.readFileSync(statsFile, 'utf8'));
 
-    stats = {
-        ...DEFAULT_STATS,
-        ...(data.stats || {})
+    data = {
+        ...DEFAULT_DATA,
+        ...(userData.data || {})
     };
 
     shop = {
         ...DEFAULT_SHOP,
-        ...(data.shop || {})
+        ...(userData.shop || {})
     };
 
     advancements = {
-        firstClick: data.advancements?.firstClick ?? DEFAULT_ADVANCEMENTS.firstClick,
-        openedSettings: data.advancements?.openedSettings ?? DEFAULT_ADVANCEMENTS.openedSettings,
+        firstClick: userData.advancements?.firstClick ?? DEFAULT_ADVANCEMENTS.firstClick,
+        openedSettings: userData.advancements?.openedSettings ?? DEFAULT_ADVANCEMENTS.openedSettings,
         clicks: {
             ...DEFAULT_ADVANCEMENTS.clicks,
-            ...(data.advancements?.clicks || {})
+            ...(userData.advancements?.clicks || {})
         },
         cash: {
             ...DEFAULT_ADVANCEMENTS.cash,
-            ...(data.advancements?.cash || {})
+            ...(userData.advancements?.cash || {})
         },
         auto: {
             ...DEFAULT_ADVANCEMENTS.auto,
-            ...(data.advancements?.auto || {})
+            ...(userData.advancements?.auto || {})
         }
     };
 
 
-    shop.clicks = stats.click;
-    shop.power = stats.power;
+    shop.clicks = data.click;
+    shop.power = data.power;
 }
 
 function saveAll() {
     fs.writeFileSync(
         statsFile,
-        JSON.stringify({ stats, shop, advancements }, null, 2),
+        JSON.stringify({ data, shop, advancements }, null, 2),
         'utf8'
     );
 }
@@ -275,28 +275,28 @@ loadStats();
 ========================= */
 
 ipcMain.on('RequestUserStats', event => {
-    event.sender.send('getUserStats', { stats, shop, advancements });
-    console.log({ stats, shop, advancements })
+    event.sender.send('getUserStats', { data, shop, advancements });
+    console.log({ data, shop, advancements })
 });
 
 ipcMain.on('updateUserStats', (event, payload) => {
     if (payload.stats) {
-        stats = { ...stats, ...payload.stats };
+        data = { ...data, ...payload.data };
     }
 
     if (payload.shop) {
         shop = { ...shop, ...payload.shop };
-        if (typeof shop.clicks !== 'undefined') stats.click = shop.clicks;
-        if (typeof shop.power !== 'undefined') stats.power = shop.power;
+        if (typeof shop.clicks !== 'undefined') data.click = shop.clicks;
+        if (typeof shop.power !== 'undefined') data.power = shop.power;
     }
 
-    shop.clicks = stats.click;
-    shop.power = stats.power;
+    shop.clicks = data.click;
+    shop.power = data.power;
 
     saveAll();
 
     BrowserWindow.getAllWindows().forEach(win => {
-        win.webContents.send('getUserStats', { stats, shop });
+        win.webContents.send('getUserStats', { data, shop, advancements });
     });
 });
 
@@ -305,19 +305,19 @@ ipcMain.on('updateUserStats', (event, payload) => {
 ========================= */
 
 ipcMain.on('shop-buy', (event, { item, cost }) => {
-    if (!shop || !stats) return;
-    if (stats.value < cost) return;
+    if (!shop || !data) return;
+    if (data.value < cost) return;
 
-    stats.value -= cost;
+    data.value -= cost;
 
     switch (item) {
         case 'click':
-            stats.click += 1;
-            shop.clicks = stats.click;
+            data.click += 1;
+            shop.clicks = data.click;
             break;
         case 'power':
-            stats.power += 1;
-            shop.power = stats.power;
+            data.power += 1;
+            shop.power = data.power;
             break;
         case 'auto':
             shop.auto += 1;
@@ -327,7 +327,7 @@ ipcMain.on('shop-buy', (event, { item, cost }) => {
     saveAll();
 
     BrowserWindow.getAllWindows().forEach(win => {
-        win.webContents.send('getUserStats', { stats, shop });
+        win.webContents.send('getUserStats', { data, shop, advancements });
     });
 });
 
@@ -342,13 +342,13 @@ ipcMain.on('toggle-auto-clicker', () => {
 });
 
 setInterval(() => {
-    if (!autoClickerToggle || !shop || !stats) return;
+    if (!autoClickerToggle || !shop || !data) return;
     if (shop.auto <= 0) return;
 
-    stats.value += shop.auto * stats.power;
+    data.value += shop.auto * data.power;
     saveAll();
 
     BrowserWindow.getAllWindows().forEach(win => {
-        win.webContents.send('getUserStats', { stats, shop });
+        win.webContents.send('getUserStats', { data, shop });
     });
 }, 1000);

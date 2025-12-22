@@ -9,8 +9,8 @@ ipcRenderer.on('getUserStats', (event, statParse) => {
         Object.assign(shop, statParse.shop);
     }
 
-    if (statParse && statParse.stats) {
-        shop.value = statParse.stats.value;
+    if (statParse && statParse.data) {
+        shop.value = statParse.data.value;
     }
 
     console.log('Shop data received:', shop);
@@ -58,7 +58,7 @@ function shopBuy(item) {
 
 // Make cost dynamic
 ipcRenderer.on('getUserStats', (event, statParse) => {
-    if (!statParse.stats) return;
+    if (!statParse.data) return;
 
     const shopItemsContainer = document.getElementById('shopItems');
     if (!shopItemsContainer) return;
