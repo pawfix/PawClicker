@@ -16,3 +16,12 @@ function right_panel() {
     }
 
 };
+
+const clicker = document.getElementById('clicker')
+
+function clickerMouseDown() {
+    clicker.style.transform = 'scale(1.2)'
+}
+function clickerMouseUp() {
+    clicker.style.transform = 'scale(1)'
+}
