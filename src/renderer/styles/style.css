@@ -99,7 +99,7 @@ main div.clicker {
 @media screen and (max-width: 800px) {
   main div.clicker {
     width: 100vw;
-  }
+}
 }
 main div.clicker img.clickBlock {
   display: block;

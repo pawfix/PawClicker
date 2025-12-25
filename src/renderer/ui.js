@@ -21,7 +21,9 @@ const clicker = document.getElementById('clicker')
 
 function clickerMouseDown() {
     clicker.style.transform = 'scale(1.2)'
+    clicker.style.filter = 'drop-shadow(5px 5px 5px rgba(65, 5, 5, 1)'
 }
 function clickerMouseUp() {
     clicker.style.transform = 'scale(1)'
+    clicker.style.filter = 'none'
 }
