@@ -59,6 +59,11 @@ header {
     width: 100%;
     height: 25px;
     -webkit-app-region: drag;
+    transition: width 0.3s ease-out;
+    -webkit-transition: width 0.3s ease-out;
+    -moz-transition: width 0.3s ease-out;
+    -ms-transition: width 0.3s ease-out;
+    -o-transition: width 0.3s ease-out;
     &:hover {
         cursor: move;
     }
@@ -81,6 +86,7 @@ header {
         }
     }
     button {
+        margin-top: 5px;
         -webkit-app-region: no-drag;
         float: right;
         height: 25px;
@@ -92,15 +98,20 @@ header {
             filter: brightness(0.8);
             -webkit-filter: brightness(0.8);
         }
+        &:first-child {
+            margin-right: 5px;
+        }
     }
 }
 main {
+    overflow: hidden;
     display: flex;
+
     div.clicker {
         border: 5px solid gray;
+        margin-left: 0;
         display: flex;
         align-items: center;
-        width: 60vw;
         height: 100vh;
         animation: clickerSlide 60s linear infinite;
         -webkit-animation: clickerSlide 60s linear infinite;
@@ -110,115 +121,116 @@ main {
             100% 100%,
             100% 100%,
             100% 100%;
-        @media screen and (max-width: 800px) {
-            width: 100vw;
+        width: 100vw;
+        transition: width 0.3s ease;
+        -webkit-transition: width 0.3s ease;
+        -moz-transition: width 0.3s ease;
+        -ms-transition: width 0.3s ease;
+        -o-transition: width 0.3s ease;
+        &.panel-open {
+            width: calc(100vw - 40vw);
         }
 
         img.clickBlock {
             display: block;
             width: 50%;
-            aspect-ratio: 1/1;
+            aspect-ratio: 1 / 1;
             transition:
                 transform 0.3s ease-in-out,
                 filter 0.3s ease-in-out;
-            -webkit-transition:
-                transform 0.3s ease-in-out,
-                filter 0.3s ease-in-out;
-            -moz-transition:
-                transform 0.3s ease-in-out,
-                filter 0.3s ease-in-out;
-            -ms-transition:
-                transform 0.3s ease-in-out,
-                filter 0.3s ease-in-out;
-            -o-transition:
-                transform 0.3s ease-in-out,
-                filter 0.3s ease-in-out;
+
             &:hover {
                 cursor: pointer;
                 transform: scale(1.1) translateY(-5%);
                 filter: brightness(0.8);
-                -webkit-filter: brightness(0.8);
-                -webkit-transform: scale(1.1) translateY(-5%);
-                -moz-transform: scale(1.1) translateY(-5%);
-                -ms-transform: scale(1.1) translateY(-5%);
-                -o-transform: scale(1.1) translateY(-5%);
             }
         }
     }
+
     .rightPanel {
-        width: 40vw;
+        position: fixed;
+        top: 0;
+        right: 0;
         height: 100vh;
+        width: 40vw;
         display: flex;
         flex-direction: column;
-        -webkit-transition: width 0.4s ease-out;
-        -moz-transition: width 0.4s ease-out;
-        -ms-transition: width 0.4s ease-out;
-        -o-transition: width 0.4s ease-out;
+        transform: translateX(100%);
+        opacity: 0;
+        pointer-events: none;
+        transition:
+            transform 0.2s ease-out,
+            opacity 0.25s ease-out;
 
-        transition: width 0.4s ease-out;
-        @media screen and (max-width: 800px) {
-            display: none;
+        &.is-open {
+            transform: translateX(0);
+            opacity: 1;
+            pointer-events: auto;
+            -webkit-transform: translateX(0);
+            -moz-transform: translateX(0);
+            -ms-transform: translateX(0);
+            -o-transform: translateX(0);
         }
     }
 
     button.rightPanelBtn {
-        display: none;
         position: fixed;
         top: 50%;
         right: 0;
-        transform: translateY(-50%) translateX(100px);
-        -webkit-transform: translateY(-50%) translateX(100px);
-        -moz-transform: translateY(-50%) translateX(100px);
-        -ms-transform: translateY(-50%) translateX(100px);
-        -o-transform: translateY(-50%) translateX(100px);
         height: 75px;
-        padding-left: 30px;
         width: 130px;
+        padding-left: 30px;
         border: none;
         background-color: var(--secondary-color);
         border-top-left-radius: 10px;
         border-bottom-left-radius: 10px;
-        @media screen and (max-width: 800px) {
-            display: block;
+        transform: translateY(-50%) translateX(100px);
+        transition:
+            transform 0.3s ease,
+            right 0.3s ease;
+
+        &.is-open {
+            right: 40vw;
+            transform: translateY(-50%) translateX(100px);
+            -webkit-transform: translateY(-50%) translateX(100px);
+            -moz-transform: translateY(-50%) translateX(100px);
+            -ms-transform: translateY(-50%) translateX(100px);
+            -o-transform: translateY(-50%) translateX(100px);
         }
+
         &:hover {
-            transform: translateX(0) translateY(-50%);
+            transform: translateY(-50%) translateX(0);
             cursor: pointer;
             filter: brightness(0.8);
-            -webkit-filter: brightness(0.8);
-            -webkit-transform: translateX(0) translateY(-50%);
-            -moz-transform: translateX(0) translateY(-50%);
-            -ms-transform: translateX(0) translateY(-50%);
-            -o-transform: translateX(0) translateY(-50%);
         }
     }
+
     div.balance {
         height: 40vh;
         width: 40vw;
         background-color: var(--secondary-color);
         text-align: center;
         padding: 20px;
+
         button {
             background-color: var(--background-color);
             border: none;
             border-radius: 15px;
-            -webkit-border-radius: 15px;
-            -moz-border-radius: 15px;
-            -ms-border-radius: 15px;
-            -o-border-radius: 15px;
             padding: 10px;
             font-size: 1.2rem;
             margin-top: 10px;
+
             &:hover {
                 cursor: pointer;
                 filter: brightness(0.8);
-                -webkit-filter: brightness(0.8);
             }
         }
+
         p#cash {
             font-size: 48px;
             margin-bottom: 10px;
         }
+
         p {
             font-size: 24px;
             margin-bottom: 20px;
@@ -235,41 +247,35 @@ main {
         scroll-behavior: smooth;
         scrollbar-width: none;
         -ms-overflow-style: none;
+
         &::-webkit-scrollbar {
             width: 0;
             height: 0;
             background: transparent;
         }
-        &::-webkit-scrollbar-track {
-            background: transparent;
-        }
-        &::-webkit-scrollbar-thumb {
-            background: transparent;
-        }
+
         h1 {
             margin: 20px;
             font-size: 36px;
         }
+
         div.shopItems {
             display: flex;
             gap: 10px;
             margin: 0;
             flex-direction: column;
+
             button {
                 background-color: var(--secondary-color);
                 border: 2px solid var(--primary-color);
                 border-radius: 25px;
-                -webkit-border-radius: 25px;
-                -moz-border-radius: 25px;
-                -ms-border-radius: 25px;
-                -o-border-radius: 25px;
                 width: 80%;
                 padding: 10px;
                 font-size: 1.2rem;
+
                 &:hover {
                     cursor: pointer;
                     filter: brightness(0.8);
-                    -webkit-filter: brightness(0.8);
                 }
             }
         }

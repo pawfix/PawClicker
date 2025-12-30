@@ -2,20 +2,24 @@
 let state = 1;
 
 function right_panel() {
-    const panel = document.querySelector(".rightPanel")
-    const clicker = document.querySelector(".clicker")
-    if (state == 0) {
-        panel.style.display = "none";
-        clicker.style.width = "100vw";
-        state = 1;
-    }
-    else {
-        panel.style.display = "flex";
-        clicker.style.width = "";
-        state = 0;
-    }
+    const panel = document.querySelector(".rightPanel");
+    const btn = document.querySelector(".rightPanelBtn");
+    const clicker = document.querySelector(".clicker");
+    const header = document.querySelector('header')
 
-};
+    const open = panel.classList.toggle("is-open");
+
+    btn.classList.toggle("is-open", open);
+    clicker.classList.toggle("panel-open", open);
+
+    header.style.width = open ? "60vw" : "100vw"
+    btn.textContent = open ? "Close Menu" : "Open Menu";
+
+    state = open ? 0 : 1;
+}
+
+
+
 
 const clicker = document.getElementById('clicker')
 
