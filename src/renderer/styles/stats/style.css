@@ -45,10 +45,10 @@ div#statsContainer table tbody tr td {
 }
 div#statsContainer table tbody tr:hover {
   font-size: 1.2em;
-  transition: font-size 0.3s ease-out;
+  transition: font-size 0.3s ease;
   background-color: var(--header-button);
-  -webkit-transition: font-size 0.3s ease-out;
-  -moz-transition: font-size 0.3s ease-out;
-  -ms-transition: font-size 0.3s ease-out;
-  -o-transition: font-size 0.3s ease-out;
+  -webkit-transition: font-size 0.3s ease;
+  -moz-transition: font-size 0.3s ease;
+  -ms-transition: font-size 0.3s ease;
+  -o-transition: font-size 0.3s ease;
 }/*# sourceMappingURL=style.css.map */

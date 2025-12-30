@@ -47,7 +47,7 @@ function updateDisplay() {
 
     cashEl.innerText = `Cash: ${data.value}$`;
     clickEl.innerText = `Click Power: ${data.click}`;
-    powerEl.innerText = `Power Multiplier: ${data.power}`;
+    powerEl.innerText = `Power Multiplier: ${(data.power / 10) + 1}X`;
 }
 
 // Initial setup

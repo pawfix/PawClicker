@@ -17,11 +17,11 @@
   color: var(--text-color);
   padding: 0;
   box-sizing: border-box;
-  transition: transform 0.3s ease-in-out, color 0.3s ease-in-out, background-color 0.3s ease-in-out;
-  -webkit-transition: transform 0.3s ease-in-out;
-  -moz-transition: transform 0.3s ease-in-out;
-  -ms-transition: transform 0.3s ease-in-out;
-  -o-transition: transform 0.3s ease-in-out;
+  transition: transform 0.3s ease, color 0.3s ease, background-color 0.3s ease;
+  -webkit-transition: transform 0.3s ease;
+  -moz-transition: transform 0.3s ease;
+  -ms-transition: transform 0.3s ease;
+  -o-transition: transform 0.3s ease;
 }
 
 @keyframes clickerSlide {
@@ -46,11 +46,11 @@ header {
   width: 100%;
   height: 25px;
   -webkit-app-region: drag;
-  transition: width 0.3s ease-out;
-  -webkit-transition: width 0.3s ease-out;
-  -moz-transition: width 0.3s ease-out;
-  -ms-transition: width 0.3s ease-out;
-  -o-transition: width 0.3s ease-out;
+  transition: width 0.3s ease;
+  -webkit-transition: width 0.3s ease;
+  -moz-transition: width 0.3s ease;
+  -ms-transition: width 0.3s ease;
+  -o-transition: width 0.3s ease;
 }
 header:hover {
   cursor: move;
@@ -119,12 +119,16 @@ main div.clicker img.clickBlock {
   display: block;
   width: 50%;
   aspect-ratio: 1/1;
-  transition: transform 0.3s ease-in-out, filter 0.3s ease-in-out;
+  transition: transform 0.3s ease, filter 0.3s ease;
 }
 main div.clicker img.clickBlock:hover {
   cursor: pointer;
-  transform: scale(1.1) translateY(-5%);
+  transform: scale(1.05) translateY(-2.5%);
   filter: brightness(0.8);
+  -webkit-transform: scale(1.05) translateY(-2.5%);
+  -moz-transform: scale(1.05) translateY(-2.5%);
+  -ms-transform: scale(1.05) translateY(-2.5%);
+  -o-transform: scale(1.05) translateY(-2.5%);
 }
 main .rightPanel {
   position: fixed;
@@ -137,7 +141,11 @@ main .rightPanel {
   transform: translateX(100%);
   opacity: 0;
   pointer-events: none;
-  transition: transform 0.2s ease-out, opacity 0.25s ease-out;
+  transition: transform 0.2s ease, opacity 0.25s ease;
+  -webkit-transition: transform 0.2s ease, opacity 0.25s ease;
+  -moz-transition: transform 0.2s ease, opacity 0.25s ease;
+  -ms-transition: transform 0.2s ease, opacity 0.25s ease;
+  -o-transition: transform 0.2s ease, opacity 0.25s ease;
 }
 main .rightPanel.is-open {
   transform: translateX(0);

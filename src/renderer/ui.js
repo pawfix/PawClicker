@@ -18,16 +18,16 @@ function right_panel() {
     state = open ? 0 : 1;
 }
 
+document.addEventListener("keydown", (e) => {
+    if (e.repeat) return;
 
+    if (e.key === "Tab") {
+        e.preventDefault();
+        right_panel();
+    }
+    else if (e.code === "Space") {
+        e.preventDefault();
+        executeClick();
+    }
+});
 
-
-const clicker = document.getElementById('clicker')
-
-function clickerMouseDown() {
-    clicker.style.transform = 'scale(1.2)'
-    clicker.style.filter = 'drop-shadow(5px 5px 5px rgba(65, 5, 5, 1)'
-}
-function clickerMouseUp() {
-    clicker.style.transform = 'scale(1)'
-    clicker.style.filter = 'none'
-}
