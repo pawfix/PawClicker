@@ -12,7 +12,7 @@ ipcRenderer.on('getUserStats', (event, statParse) => {
     if (statParse && statParse.data) {
         shop.value = Math.round(statParse.data.value * 10) / 10;
     }
-    console.log('Shop data received:', shop);
+    //console.log('Shop data received:', shop);
 });
 
 
@@ -28,12 +28,12 @@ function saveShop() {
 
     ipcRenderer.send('updateUserStats', { shop: roundedShop });
 
-    console.log('Shop data sent to main for saving (rounded):', roundedShop);
+    //console.log('Shop data sent to main for saving (rounded):', roundedShop);
 }
 
 
 function logShop() {
-    console.log('Current shop data:', shop);
+    //console.log('Current shop data:', shop);
 }
 
 // Initial setup
@@ -61,7 +61,7 @@ function shopBuy(item) {
     const cost = getShopPrice(item);
 
     if (!cost) {
-        console.log('Unknown shop item:', item);
+        //console.log('Unknown shop item:', item);
         return;
     }
 
@@ -93,5 +93,5 @@ ipcRenderer.on('getUserStats', (event, statParse) => {
 
 function toggleAutoClicker() {
     ipcRenderer.send('toggle-auto-clicker');
-    console.log('Toggled auto clicker');
+    //console.log('Toggled auto clicker');
 }

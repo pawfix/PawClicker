@@ -4,13 +4,13 @@ function openSecondWindow() {
 
 function openAdvancementsWindow() {
     window.ipcRenderer.send('open-advancements-window')
-    console.log('requested window');
+    //console.log('requested window');
 
 }
 
 function openStatsWindow() {
     window.ipcRenderer.send('open-stats-window')
-    console.log('requested window');
+    //console.log('requested window');
 
 }
 

@@ -24,7 +24,7 @@
         </header>
         <main>
             <div class="clicker">
-                <img src="../assets/UI/click.svg" onclick="executeClick(); logClick()" id="clicker" class="clickBlock" alt="click">
+                <img src="../assets/UI/click.svg" onclick="executeClick(); logClick(); setNewScale()" id="clicker" class="clickBlock" alt="click">
             </div>
             <button onclick="right_panel()" id="rightPanel" class="rightPanelBtn" tabindex="-1">Open Menu</button>
             <div class="rightPanel">
@@ -41,6 +41,7 @@
                 </div>
             </div>
         </main>
+        <div id="popUpDiv"></div>
         <script>
         function resetData() {
             // Reset Balance

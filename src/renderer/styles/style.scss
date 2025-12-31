@@ -134,6 +134,7 @@ main {
         img.clickBlock {
             display: block;
             width: 50%;
+            max-height: 80vh;
             aspect-ratio: 1 / 1;
             transition:
                 transform 0.3s ease,
@@ -294,5 +295,25 @@ main {
                 }
             }
         }
+    }
+}
+div.newDiv {
+    position: absolute;
+    z-index: 1000;
+    pointer-events: none;
+    font-family:
+        "Lucida Sans", "Lucida Sans Regular", "Lucida Grande", "Lucida Sans Unicode", Geneva, Verdana, sans-serif;
+    color: #ffffffff;
+    opacity: 0.67;
+    animation: fadeOut 3s linear forwards;
+    -webkit-animation: fadeOut 3s linear forwards;
+    font-size: 1.25em;
+}
+@keyframes fadeOut {
+    from {
+        opacity: 0.67;
+    }
+    to {
+        opacity: 0.07;
     }
 }

@@ -7,15 +7,15 @@ ipcRenderer.on('getUserStats', (event, statParse) => {
     advancements = statParse.advancements || advancements;
     if (statParse.stats) {
         statProgress = statParse.stats;
-        console.log('CASH CHECK:', statProgress.cash); // <- will log correct value
+        ////console.log('CASH CHECK:', statProgress.cash); // <- will log correct value
     }
-    console.log('Advancements received:', advancements);
+    ////console.log('Advancements received:', advancements);
 
 });
 
 ipcRenderer.on('getStatProgress', (event, stats) => {
     statProgress = stats;
-    console.log(stats); // stats is now { cash, clicks, autoClick }
+    ////console.log(stats); // stats is now { cash, clicks, autoClick }
 });
 
 ipcRenderer.on('getUserStats', (event, statParse) => {
@@ -77,7 +77,7 @@ ipcRenderer.on('getUserStats', (event, statParse) => {
 
 
 function LogStatProgress() {
-    console.log(statProgress);
+    ////console.log(statProgress);
 
 }
 
@@ -88,12 +88,12 @@ function saveStatProgress(incrementCash = 0, incrementClicks = 0) {
             clicks: incrementClicks
         }
     });
-    console.log('Stats sent to main for saving:', { cash: incrementCash, clicks: incrementClicks });
+    //console.log('Stats sent to main for saving:', { cash: incrementCash, clicks: incrementClicks });
 }
 
 function logClick() {
     statProgress.clicks += 1;
-    console.log(statProgress.clicks);
+    //console.log(statProgress.clicks);
     saveStatProgress()
 
 }

@@ -9,7 +9,7 @@ let advancementsWindow;
 let statsWindow;
 
 // TEST
-console.log('main.js directory:', __dirname);
+//console.log('main.js directory:', __dirname);
 
 /* =========================
    WINDOWS
@@ -135,7 +135,7 @@ ipcMain.on('open-second-window', () => {
     // Mark "openedSettings" advancement
     if (advancements && !advancements.openedSettings) {
         advancements.openedSettings = true;
-        console.log('openedSettings advancement unlocked!');
+        //console.log('openedSettings advancement unlocked!');
 
         // Save updated advancements
         saveAll();
@@ -241,12 +241,12 @@ const userStatsFile = path.join(extraResourcesDir, 'stats.json');
 if (!fs.existsSync(extraResourcesDir)) {
     try {
         fs.mkdirSync(extraResourcesDir, { recursive: true });
-        console.log('Created extraResources folder:', extraResourcesDir);
+        //console.log('Created extraResources folder:', extraResourcesDir);
         BrowserWindow.getAllWindows().forEach(win => {
             win.webContents.send('log-save-dir', 'Created extraResources folder: ' + extraResourcesDir);
         });
     } catch (err) {
-        console.log('error: ' + err);
+        //console.log('error: ' + err);
         BrowserWindow.getAllWindows().forEach(win => {
             win.webContents.send('log-save-dir', 'error: ' + err);
         });
@@ -268,7 +268,7 @@ if (!fs.existsSync(userStatsFile)) {
         ),
         'utf8'
     );
-    console.log('Created new stats.json in extraResources with default values');
+    //console.log('Created new stats.json in extraResources with default values');
     BrowserWindow.getAllWindows().forEach(win => {
         win.webContents.send('log-save-dir', 'Created new stats.json in extraResources with default values');
     });
@@ -276,10 +276,10 @@ if (!fs.existsSync(userStatsFile)) {
 
 
 const statsFile = userStatsFile;
-console.log('Using stats file:', statsFile);
+//console.log('Using stats file:', statsFile);
 
 ipcMain.on('requestSaveDir', (event) => {
-    console.log('Got Request for stats file:', statsFile);
+    //console.log('Got Request for stats file:', statsFile);
     event.sender.send('UsingStatsFile', statsFile);
 });
 
@@ -382,6 +382,11 @@ ipcMain.on('manual-click', () => {
             advancements
         });
     });
+
+    const roundGain = Math.round(gain * 10) / 10;
+    mainWindow.webContents.send('clickedGain', roundGain);
+
+    return roundGain;
 });
 
 
@@ -428,7 +433,7 @@ ipcMain.on('resetStatProgress', event => {
     stats = { ...DEFAULT_STATS }; // make a copy to avoid reference issues
     saveAll();
 
-    console.log('reseted data');
+    //console.log('reseted data');
 
     // Send updated stats to all windows
     BrowserWindow.getAllWindows().forEach(win => {
@@ -526,12 +531,12 @@ function checkAdvancements() {
     // Simple True/False advancements
     if (!advancements.firstClick && stats.clicks > 0) {
         advancements.firstClick = true;
-        console.log('firstClick unlocked!');
+        //console.log('firstClick unlocked!');
     }
 
     if (!advancements.openedSettings && stats.openedSettingsTriggered) {
         advancements.openedSettings = true;
-        console.log('openedSettings unlocked!');
+        //console.log('openedSettings unlocked!');
     }
 
     // Loop over all categories dynamically
@@ -555,7 +560,7 @@ function checkAdvancements() {
 
             if (!advancements[cat][milestone] && statValue >= milestoneValue) {
                 advancements[cat][milestone] = true;
-                console.log(`${cat} milestone ${milestoneValue} unlocked!`);
+                //console.log(`${cat} milestone ${milestoneValue} unlocked!`);
             }
         }
     });

@@ -10,7 +10,7 @@ ipcRenderer.on('getUserStats', (event, statParse) => {
     // Use the stats object only
     data = statParse.data || data;
     updateDisplay();
-    console.log('Stats received:', data);
+    //console.log('Stats received:', data);
 });
 
 // Request stats from main
@@ -28,7 +28,7 @@ function saveStats() {
             clicks: 1
         }
     });
-    console.log('Stats sent to main for saving:', data);
+    //console.log('Stats sent to main for saving:', data);
 }
 
 // Execute click
@@ -60,7 +60,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // Listen once for the stats file
 ipcRenderer.on('UsingStatsFile', (event, statsFile) => {
-    console.log('Stats file path from main:', statsFile);
+    //console.log('Stats file path from main:', statsFile);
 });
 
 // Function to request it

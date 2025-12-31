@@ -5,5 +5,5 @@ window.path = require('path')
 window.ipcRenderer = require('electron').ipcRenderer
 
 window.addEventListener('DOMContentLoaded', () => {
-  console.log('Preload loaded!');
+  //console.log('Preload loaded!');
 });
