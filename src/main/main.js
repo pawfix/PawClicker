@@ -455,7 +455,6 @@ ipcMain.on('resetAllUserData', event => {
     });
 
 });
- z` `
 
 /* =========================
    SHOP LOGIC
