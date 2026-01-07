@@ -435,7 +435,7 @@ ipcMain.on('resetAllUserData', event => {
     autoClickerToggle = false;
     data.value = 0;
     data.click = 1;
-    data.power = 1;
+    data.power = 0;
 
     // Reset Stat Progress
     stats.cash = 0;

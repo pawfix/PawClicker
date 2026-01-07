@@ -4,11 +4,12 @@ let data = {
     click: 1,
     power: 1
 };
-
+let statShop;
 // Ask main.js to give user stats from the save file
 ipcRenderer.on('getUserStats', (event, statParse) => {
     // Use the stats object only
     data = statParse.data || data;
+    statShop = statParse.shop || statShop;
     updateDisplay();
     //console.log('Stats received:', data);
 });
@@ -42,12 +43,21 @@ function updateDisplay() {
     const cashEl = document.getElementById("cash");
     const clickEl = document.getElementById("click");
     const powerEl = document.getElementById("power");
+    let displayPower;
 
     if (!cashEl || !clickEl || !powerEl) return;
 
+    if (shop.power === 1) {
+        displayPower = 1;
+    } else {
+        displayPower = (shop.power / 10) + 1;
+    }
+
+    //console.log(data.power === (shop.power + 1))
+
     cashEl.innerText = `Cash: ${data.value}$`;
     clickEl.innerText = `Click Power: ${data.click}`;
-    powerEl.innerText = `Power Multiplier: ${(data.power / 10) + 1}X`;
+    powerEl.innerText = `Power Multiplier: ${displayPower}X`;
 }
 
 // Initial setup
