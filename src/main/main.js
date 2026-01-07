@@ -428,18 +428,34 @@ ipcMain.on('updateUserStats', (event, payload) => {
 
 });
 
-ipcMain.on('resetStatProgress', event => {
-    stats = { ...DEFAULT_STATS }; // make a copy to avoid reference issues
+ipcMain.on('resetAllUserData', event => {
+
+    // Reset user data to defaults since now it has some problems...
+ 
+    data = { ...DEFAULT_DATA};
+
+    shop = { ...DEFAULT_SHOP};
+
+    advancements = { ...DEFAULT_ADVANCEMENTS};
+
+    stats = { ...DEFAULT_STATS };
+
     saveAll();
+ 
+    //console.log(data, shop, advancements, stats);
 
     //console.log('reseted data');
-
+ 
     // Send updated stats to all windows
-    BrowserWindow.getAllWindows().forEach(win => {
-        win.webContents.send('getStatProgress', stats);
-    });
-});
 
+    BrowserWindow.getAllWindows().forEach(win => {
+
+        win.webContents.send('getStatProgress', stats);
+
+    });
+
+});
+ z` `
 
 /* =========================
    SHOP LOGIC
