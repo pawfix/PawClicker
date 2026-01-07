@@ -22,7 +22,7 @@ function requestUserStats() {
 function saveStats() {
     ipcRenderer.send('updateUserStats', {
         data: {
-            value: data.click * ((data.power / 10) + 1)
+            value: data.value
         },
         statGain: {
             clicks: 1

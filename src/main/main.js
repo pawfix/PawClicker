@@ -431,21 +431,38 @@ ipcMain.on('updateUserStats', (event, payload) => {
 ipcMain.on('resetAllUserData', event => {
 
     // Reset user data to defaults since now it has some problems...
- 
-    data = { ...DEFAULT_DATA};
+    // Reset Balance
+    autoClickerToggle = false;
+    data.value = 0;
+    data.click = 1;
+    data.power = 1;
 
-    shop = { ...DEFAULT_SHOP};
+    // Reset Stat Progress
+    stats.cash = 0;
+    stats.clicks = 0;
+    stats.autoClick = 0;
 
-    advancements = { ...DEFAULT_ADVANCEMENTS};
+    // Reset shop
+    shop.clicks = 1;
+    shop.power = 1;
+    shop.auto = 0;
+    shop.value = 0;
 
-    stats = { ...DEFAULT_STATS };
+    // Reset advancements
+    advancements.firstClick = false;
+    advancements.openedSettings = false;
+    advancements.clicks = { '100': false, '1000': false, '5000': false, '50000': false };
+    advancements.cash = { '100': false, '1000': false, '5000': false, '50000': false };
+    advancements.auto = { '1': false, '5': false, '25': false };
+
+
 
     saveAll();
- 
-    //console.log(data, shop, advancements, stats);
+
+    console.log(data, shop, advancements, stats);
 
     //console.log('reseted data');
- 
+
     // Send updated stats to all windows
 
     BrowserWindow.getAllWindows().forEach(win => {
@@ -516,7 +533,7 @@ setInterval(() => {
     if (shop.auto <= 0) return;
 
     stats.autoClick += 1;                     // Increment auto clicks
-    addValue(shop.auto * data.power);        // Add auto click value
+    addValue(shop.auto * 10 * (data.click + (data.power - 1)));        // Add auto click value
 
     checkAdvancements();                     // Check advancements based on updated stats
 
