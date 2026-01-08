@@ -59,10 +59,13 @@ function getShopPrice(item) {
 // Buy Item
 function shopBuy(item) {
     const cost = getShopPrice(item);
-
+    const button = getElementById("shopbutton")
     if (!cost) {
         //console.log('Unknown shop item:', item);
         return;
+    }
+    if(cost > data.value) {
+    
     }
 
     ipcRenderer.send('shop-buy', { item, cost });
@@ -76,13 +79,13 @@ ipcRenderer.on('getUserStats', (event, statParse) => {
     if (!shopItemsContainer) return;
 
     shopItemsContainer.innerHTML = `
-        <button onclick="shopBuy('click')" tabindex="-1">
+        <button id="shopbutton" onclick="shopBuy('click')" tabindex="-1">
             Upgrade click (${shop.clicks}) - ${getShopPrice('click')}$
         </button>
-        <button onclick="shopBuy('power')" tabindex="-1">
+        <button id="shopbutton" onclick="shopBuy('power')" tabindex="-1">
             Upgrade power (${shop.power}) - ${getShopPrice('power')}$
         </button>
-        <button onclick="shopBuy('auto')" tabindex="-1">
+        <button id="shopbutton" onclick="shopBuy('auto')" tabindex="-1">
             Upgrade auto clicker (${shop.auto}) - ${getShopPrice('auto')}$
         </button>
     `;
