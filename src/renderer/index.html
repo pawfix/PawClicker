@@ -68,7 +68,7 @@
             advancements.auto = { '1': false, '5': false, '25': false };
 
             // Save and update related data
-            ipcRenderer.send('resetStatProgress')
+            ipcRenderer.send('resetAllUserData');
             saveShop();
             saveStats();
             saveStatProgress();
